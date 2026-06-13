@@ -17,7 +17,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://solvyn.co"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://solvynconsulting.com"
   ),
   title: "Solvyn — Technology and AI Consulting for Growing Businesses",
   description:
