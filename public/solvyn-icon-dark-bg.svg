@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" fill="none" role="img">
+  <title>Solvyn icon, for dark backgrounds</title>
+  <path d="M16 32 L16 16 L32 16" stroke="#FAFAFA" stroke-width="6" stroke-linecap="square" fill="none"/>
+  <path d="M84 68 L84 84 L68 84" stroke="#FAFAFA" stroke-width="6" stroke-linecap="square" fill="none"/>
+  <rect x="38" y="38" width="24" height="24" fill="#2DD4BF" transform="rotate(45 50 50)"/>
+</svg>
