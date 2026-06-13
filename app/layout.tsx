@@ -19,11 +19,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://solvynconsulting.com"
   ),
-  title: "Solvyn — Technology and AI Consulting for Growing Businesses",
+  title: "Solvyn: Technology and AI Consulting for Growing Businesses",
   description:
     "Solvyn scopes, builds, and supports technology and AI systems for small and medium businesses. One firm, end to end, no hand-offs.",
   openGraph: {
-    title: "Solvyn — Technology and AI Consulting for Growing Businesses",
+    title: "Solvyn: Technology and AI Consulting for Growing Businesses",
     description:
       "Solvyn scopes, builds, and supports technology and AI systems for small and medium businesses. One firm, end to end, no hand-offs.",
     images: [{ url: "/solvyn-og-dark.png", width: 1200, height: 630 }],
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Solvyn — Technology and AI Consulting for Growing Businesses",
+    title: "Solvyn: Technology and AI Consulting for Growing Businesses",
     description:
       "Solvyn scopes, builds, and supports technology and AI systems for small and medium businesses. One firm, end to end, no hand-offs.",
     images: ["/solvyn-og-dark.png"],

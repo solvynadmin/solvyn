@@ -4,7 +4,7 @@ const steps = [
   {
     num: "01",
     heading: "Understand before proposing",
-    body: "We don't start by pitching a solution. Before any proposal, we spend time understanding how your business operates — where the friction is, what you've already tried, and what a realistic fix actually looks like. That conversation shapes the scope, the budget, and what gets cut.",
+    body: "We don't start by pitching a solution. Before any proposal, we spend time understanding how your business operates: where the friction is, what you've already tried, and what a realistic fix actually looks like. That conversation shapes the scope, the budget, and what gets cut.",
   },
   {
     num: "02",
@@ -14,7 +14,7 @@ const steps = [
   {
     num: "03",
     heading: "Stay involved after launch",
-    body: "After launch, we stay involved. Most technology problems surface after go-live, not before. We offer ongoing support for what we build, so when something changes or breaks, you have someone accountable — not a helpdesk ticket with a five-day response window.",
+    body: "After launch, we stay involved. Most technology problems surface after go-live, not before. We offer ongoing support for what we build, so when something changes or breaks, you have someone accountable. Not a helpdesk ticket with a five-day response window.",
   },
 ];
 

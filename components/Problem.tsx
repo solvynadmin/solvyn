@@ -24,7 +24,7 @@ export function Problem() {
               style={{ fontFamily: "var(--font-inter)" }}
             >
               That&apos;s the situation Solvyn is built to change. We start by
-              learning how your business actually operates — where things are
+              learning how your business actually operates: where things are
               working and where they&apos;re not, and what you&apos;d fix first if you had
               the bandwidth. Then we scope a solution, build it, and stay
               involved past launch. One firm, one relationship, no hand-offs.

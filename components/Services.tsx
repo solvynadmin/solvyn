@@ -7,22 +7,22 @@ const services = [
   {
     title: "Website and App Development",
     description:
-      "From a clean marketing site to a custom internal tool or customer-facing app, we design and build what your business needs. After launch, we maintain what we build — no hand-off to a third party once the project is done.",
+      "From a clean marketing site to a custom internal tool or customer-facing app, we design and build what your business needs. After launch, we maintain what we build. No hand-off to a third party once the project is done.",
   },
   {
     title: "AI Implementation",
     description:
-      "Whatever form AI takes in your business — an agent handling repetitive work, a customer-facing chatbot, automated workflows between your existing tools — we scope what's realistic and build it to actually work in your environment.",
+      "Whatever form AI takes in your business, whether that's an agent handling repetitive work, a customer-facing chatbot, or automated workflows between your existing tools, we scope what's realistic and build it to actually work in your environment.",
   },
   {
     title: "Systems and Integrations",
     description:
-      "We handle the tools your business runs on, from initial setup through day-to-day management. If something in your current stack isn't doing its job, we'll tell you — and find a better path, whether that means a different tool or a smarter configuration.",
+      "We handle the tools your business runs on, from initial setup through day-to-day management. If something in your current stack isn't doing its job, we'll tell you and help find a better path, whether that means a different tool or a smarter configuration.",
   },
   {
     title: "Strategic Consulting",
     description:
-      "If you're not sure where to start, start here. We ask the right questions, map what you have, and give you a clear picture of what to build and why. No jargon, no overselling — just an honest assessment and a realistic plan.",
+      "If you're not sure where to start, start here. We ask the right questions, map what you have, and give you a clear picture of what to build and why. No jargon, no overselling. Just an honest assessment and a realistic plan.",
   },
 ];
 
