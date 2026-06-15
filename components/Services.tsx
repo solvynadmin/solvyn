@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { FadeIn } from "@/components/FadeIn";
 
 const services = [
@@ -27,6 +27,8 @@ const services = [
 ];
 
 export function Services() {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <section id="services" className="py-20 md:py-28">
       <div className="max-w-[1200px] mx-auto px-6 md:px-8">
@@ -42,15 +44,15 @@ export function Services() {
           {services.map((service, i) => (
             <motion.div
               key={service.title}
-              initial={{ opacity: 0, y: 28 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{
+              initial={prefersReducedMotion ? false : { opacity: 0, y: 28 }}
+              whileInView={prefersReducedMotion ? undefined : { opacity: 1, y: 0 }}
+              viewport={prefersReducedMotion ? undefined : { once: true, margin: "-60px" }}
+              transition={prefersReducedMotion ? { duration: 0 } : {
                 duration: 0.5,
                 ease: [0.22, 1, 0.36, 1],
                 delay: i * 0.08,
               }}
-              whileHover={{ y: -3 }}
+              whileHover={prefersReducedMotion ? undefined : { y: -3 }}
               className="group relative bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-8 transition-colors duration-200 hover:border-teal-600/50 dark:hover:border-teal-400/50 cursor-default"
             >
               {/* Top accent line — reveals on hover */}
@@ -65,7 +67,7 @@ export function Services() {
                 {service.title}
               </h3>
               <p
-                className="text-zinc-500 dark:text-zinc-400 leading-relaxed"
+                className="text-zinc-600 dark:text-zinc-400 leading-relaxed"
                 style={{ fontFamily: "var(--font-inter)" }}
               >
                 {service.description}

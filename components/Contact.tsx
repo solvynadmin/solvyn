@@ -89,7 +89,7 @@ export function Contact() {
   }
 
   const inputClass =
-    "w-full px-4 py-3 rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-teal-600 dark:focus:border-teal-400 transition-colors text-base";
+    "w-full px-4 py-3 rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-400 dark:placeholder:text-zinc-600 focus:outline-none focus:border-teal-700 dark:focus:border-teal-400 focus:ring-2 focus:ring-teal-700/30 dark:focus:ring-teal-400/30 transition-colors text-base";
 
   if (status === "success") {
     return (
@@ -98,7 +98,7 @@ export function Contact() {
           <FadeIn>
             <div className="flex items-start gap-4 mb-4">
               <span
-                className="mt-1 inline-block h-8 w-8 rounded-full bg-teal-600 dark:bg-teal-400 flex-shrink-0"
+                className="mt-1 inline-block h-8 w-8 rounded-full bg-teal-700 dark:bg-teal-400 flex-shrink-0"
                 aria-hidden="true"
               />
               <h2
@@ -151,7 +151,7 @@ export function Contact() {
                 ].map((item) => (
                   <div key={item.label}>
                     <p
-                      className="text-xs font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-1"
+                      className="text-xs font-medium text-zinc-600 dark:text-zinc-400 uppercase tracking-wider mb-1"
                       style={{ fontFamily: "var(--font-inter)" }}
                     >
                       {item.label}
@@ -195,13 +195,17 @@ export function Contact() {
                   className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5"
                   style={{ fontFamily: "var(--font-inter)" }}
                 >
-                  Name <span className="text-teal-600 dark:text-teal-400">*</span>
+                  Name <span className="text-teal-700 dark:text-teal-400" aria-hidden="true">*</span>
                 </label>
                 <input
                   id="name"
                   name="name"
                   type="text"
                   autoComplete="name"
+                  required
+                  aria-required="true"
+                  aria-invalid={!!errors.name}
+                  aria-describedby={errors.name ? "name-error" : undefined}
                   value={form.name}
                   onChange={handleChange}
                   placeholder="Your name"
@@ -209,7 +213,7 @@ export function Contact() {
                   style={{ fontFamily: "var(--font-inter)" }}
                 />
                 {errors.name && (
-                  <p className="mt-1.5 text-sm text-red-500" style={{ fontFamily: "var(--font-inter)" }}>
+                  <p id="name-error" role="alert" className="mt-1.5 text-sm text-red-600" style={{ fontFamily: "var(--font-inter)" }}>
                     {errors.name}
                   </p>
                 )}
@@ -221,13 +225,17 @@ export function Contact() {
                   className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5"
                   style={{ fontFamily: "var(--font-inter)" }}
                 >
-                  Email <span className="text-teal-600 dark:text-teal-400">*</span>
+                  Email <span className="text-teal-700 dark:text-teal-400" aria-hidden="true">*</span>
                 </label>
                 <input
                   id="email"
                   name="email"
                   type="email"
                   autoComplete="email"
+                  required
+                  aria-required="true"
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "email-error" : undefined}
                   value={form.email}
                   onChange={handleChange}
                   placeholder="you@company.com"
@@ -235,7 +243,7 @@ export function Contact() {
                   style={{ fontFamily: "var(--font-inter)" }}
                 />
                 {errors.email && (
-                  <p className="mt-1.5 text-sm text-red-500" style={{ fontFamily: "var(--font-inter)" }}>
+                  <p id="email-error" role="alert" className="mt-1.5 text-sm text-red-600" style={{ fontFamily: "var(--font-inter)" }}>
                     {errors.email}
                   </p>
                 )}
@@ -271,7 +279,7 @@ export function Contact() {
                   style={{ fontFamily: "var(--font-inter)" }}
                 >
                   Phone{" "}
-                  <span className="text-zinc-400 dark:text-zinc-600 font-normal">
+                  <span className="text-zinc-500 dark:text-zinc-500 font-normal">
                     (optional)
                   </span>
                 </label>
@@ -335,7 +343,8 @@ export function Contact() {
 
             {serverError && (
               <p
-                className="text-sm text-red-500"
+                role="alert"
+                className="text-sm text-red-600"
                 style={{ fontFamily: "var(--font-inter)" }}
               >
                 {serverError}
@@ -345,7 +354,7 @@ export function Contact() {
             <button
               type="submit"
               disabled={status === "loading"}
-              className="px-6 py-3 rounded-[7px] bg-teal-600 dark:bg-teal-400 text-white dark:text-zinc-900 font-medium text-base hover:bg-teal-700 dark:hover:bg-teal-300 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
+              className="px-6 py-3 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 font-medium text-base hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors disabled:opacity-60 disabled:cursor-not-allowed"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               {status === "loading" ? "Sending..." : "Send message"}

@@ -26,6 +26,20 @@ export function Footer() {
             &copy; {new Date().getFullYear()} Solvyn LLC
           </p>
           <a
+            href="/privacy"
+            className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            Privacy Policy
+          </a>
+          <a
+            href="/terms"
+            className="text-sm text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            Terms
+          </a>
+          <a
             href="https://www.instagram.com/solvynconsulting/"
             target="_blank"
             rel="noopener noreferrer"

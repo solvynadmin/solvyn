@@ -1,9 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 
 export function Hero() {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <section className="relative min-h-[85vh] flex items-center pt-16 overflow-hidden">
       {/* Dot grid background */}
@@ -44,17 +46,17 @@ export function Hero() {
         <div className="max-w-3xl">
           {/* Eyebrow */}
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
             className="flex items-center gap-2 mb-6"
           >
             <span
-              className="inline-block h-px w-8 bg-teal-600 dark:bg-teal-400"
+              className="inline-block h-px w-8 bg-teal-700 dark:bg-teal-400"
               aria-hidden="true"
             />
             <span
-              className="text-sm font-medium text-teal-600 dark:text-teal-400 tracking-wide uppercase"
+              className="text-sm font-medium text-teal-700 dark:text-teal-400 tracking-wide uppercase"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               Technology &amp; AI Consulting
@@ -62,9 +64,9 @@ export function Hero() {
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 24 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.08 }}
             className="text-5xl md:text-[62px] font-bold text-zinc-900 dark:text-zinc-50 leading-[1.1] tracking-tight mb-6"
             style={{ fontFamily: "var(--font-space-grotesk)" }}
           >
@@ -72,9 +74,9 @@ export function Hero() {
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 24 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.16 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.16 }}
             className="text-lg md:text-xl text-zinc-500 dark:text-zinc-400 leading-relaxed mb-10 max-w-2xl"
             style={{ fontFamily: "var(--font-inter)" }}
           >
@@ -85,14 +87,14 @@ export function Hero() {
           </motion.p>
 
           <motion.div
-            initial={{ opacity: 0, y: 16 }}
+            initial={prefersReducedMotion ? false : { opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.26 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, ease: [0.22, 1, 0.36, 1], delay: 0.26 }}
             className="flex items-center gap-4"
           >
             <a
               href="#contact"
-              className="inline-block px-6 py-3 rounded-[7px] bg-teal-600 dark:bg-teal-400 text-white dark:text-zinc-900 font-medium text-base hover:bg-teal-700 dark:hover:bg-teal-300 transition-colors"
+              className="inline-block px-6 py-3 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 font-medium text-base hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               Let&apos;s talk
@@ -102,7 +104,7 @@ export function Hero() {
               className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
               style={{ fontFamily: "var(--font-inter)" }}
             >
-              See what we do →
+              See what we do <span aria-hidden="true">→</span>
             </a>
           </motion.div>
         </div>

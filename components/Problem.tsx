@@ -5,6 +5,7 @@ export function Problem() {
     <section className="bg-zinc-100 dark:bg-zinc-800 py-20 md:py-28 border-y border-zinc-200 dark:border-zinc-700">
       <div className="max-w-[1200px] mx-auto px-6 md:px-8">
         <div className="max-w-2xl">
+          <h2 className="sr-only">The problem we solve</h2>
           <FadeIn>
             <p
               className="text-lg md:text-xl text-zinc-700 dark:text-zinc-300 leading-relaxed mb-6"
