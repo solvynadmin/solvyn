@@ -12,7 +12,7 @@ const services = [
   {
     title: "AI Implementation",
     description:
-      "Whatever form AI takes in your business, whether that's an agent handling repetitive work, a customer-facing chatbot, or automated workflows between your existing tools, we scope what's realistic and build it to actually work in your environment.",
+      "If you've got a process that runs on copy-paste, or data sitting in tools that don't talk to each other, AI can probably help. We figure out what's actually realistic for your business, build it, and connect it to the software you already use.",
   },
   {
     title: "Systems and Integrations",
