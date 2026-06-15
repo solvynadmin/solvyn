@@ -5,8 +5,15 @@ export function Problem() {
     <section className="bg-zinc-100 dark:bg-zinc-800 py-20 md:py-28 border-y border-zinc-200 dark:border-zinc-700">
       <div className="max-w-[1200px] mx-auto px-6 md:px-8">
         <div className="max-w-2xl">
-          <h2 className="sr-only">The problem we solve</h2>
           <FadeIn>
+            <h2
+              className="text-sm font-medium text-teal-700 dark:text-teal-400 uppercase tracking-wide mb-6"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              The situation
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.05}>
             <p
               className="text-lg md:text-xl text-zinc-700 dark:text-zinc-300 leading-relaxed mb-6"
               style={{ fontFamily: "var(--font-inter)" }}
@@ -19,7 +26,7 @@ export function Problem() {
               fully understand your business.
             </p>
           </FadeIn>
-          <FadeIn delay={0.1}>
+          <FadeIn delay={0.15}>
             <p
               className="text-lg md:text-xl text-zinc-700 dark:text-zinc-300 leading-relaxed"
               style={{ fontFamily: "var(--font-inter)" }}

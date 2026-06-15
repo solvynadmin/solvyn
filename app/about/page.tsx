@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Nav } from "@/components/Nav";
 import { Footer } from "@/components/Footer";
+import { FadeIn } from "@/components/FadeIn";
 
 export const metadata: Metadata = {
   title: "About Solvyn",
@@ -38,6 +39,7 @@ export default function AboutPage() {
             style={{ fontFamily: "var(--font-inter)" }}
           >
 
+            <FadeIn>
             <section aria-labelledby="about-problem">
               <h2
                 id="about-problem"
@@ -58,7 +60,9 @@ export default function AboutPage() {
                 </p>
               </div>
             </section>
+            </FadeIn>
 
+            <FadeIn delay={0.05}>
             <section aria-labelledby="about-why">
               <h2
                 id="about-why"
@@ -82,7 +86,9 @@ export default function AboutPage() {
                 </p>
               </div>
             </section>
+            </FadeIn>
 
+            <FadeIn delay={0.05}>
             <section aria-labelledby="about-who">
               <h2
                 id="about-who"
@@ -92,7 +98,6 @@ export default function AboutPage() {
                 Who we are
               </h2>
               <div className="space-y-4 text-zinc-600 dark:text-zinc-400 leading-relaxed">
-                {/* TODO: confirm whether to include last name before publishing */}
                 <p>
                   Solvyn is led by Cameron, a technologist with extensive experience in operations technology and the fintech space. His background spans AI implementation, cross-functional operations work, and building technology products in compliance-sensitive environments. Outside of that, he has independently designed and shipped software products, including a consumer iOS app built using AI-assisted development tools.
                 </p>
@@ -101,7 +106,9 @@ export default function AboutPage() {
                 </p>
               </div>
             </section>
+            </FadeIn>
 
+            <FadeIn delay={0.05}>
             <section aria-labelledby="about-name">
               <h2
                 id="about-name"
@@ -119,7 +126,9 @@ export default function AboutPage() {
                 </p>
               </div>
             </section>
+            </FadeIn>
 
+            <FadeIn delay={0.05}>
             <section aria-labelledby="about-beliefs">
               <h2
                 id="about-beliefs"
@@ -155,8 +164,10 @@ export default function AboutPage() {
                 </div>
               </div>
             </section>
+            </FadeIn>
 
             {/* CTA */}
+            <FadeIn delay={0.05}>
             <div className="pt-4 border-t border-zinc-200 dark:border-zinc-800">
               <p
                 className="text-lg text-zinc-700 dark:text-zinc-300 mb-6"
@@ -164,12 +175,13 @@ export default function AboutPage() {
                 Ready to talk through what you&apos;re working on?
               </p>
               <a
-                href="/#contact"
+                href="/contact"
                 className="inline-block px-6 py-3 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 text-sm font-medium hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors"
               >
                 Contact us
               </a>
             </div>
+            </FadeIn>
 
           </div>
         </div>

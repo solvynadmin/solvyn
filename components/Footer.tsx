@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { CurrentYear } from "@/components/CurrentYear";
 
 export function Footer() {
   return (
@@ -23,7 +24,7 @@ export function Footer() {
             className="text-sm text-zinc-500 dark:text-zinc-400"
             style={{ fontFamily: "var(--font-inter)" }}
           >
-            &copy; {new Date().getFullYear()} Solvyn LLC
+            &copy; <CurrentYear /> Solvyn LLC
           </p>
           <a
             href="/privacy"

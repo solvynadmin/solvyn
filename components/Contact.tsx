@@ -11,6 +11,7 @@ type FormState = {
   phone: string;
   budget: string;
   message: string;
+  website: string; // honeypot
 };
 
 type FormErrors = Partial<Record<keyof FormState, string>>;
@@ -32,6 +33,7 @@ export function Contact() {
     phone: "",
     budget: "",
     message: "",
+    website: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
@@ -340,6 +342,18 @@ export function Contact() {
                 style={{ fontFamily: "var(--font-inter)" }}
               />
             </div>
+
+            {/* Honeypot — hidden from real users */}
+            <input
+              type="text"
+              name="website"
+              value={form.website}
+              onChange={handleChange}
+              tabIndex={-1}
+              aria-hidden="true"
+              autoComplete="off"
+              style={{ position: "absolute", left: "-9999px", opacity: 0, pointerEvents: "none" }}
+            />
 
             {serverError && (
               <p

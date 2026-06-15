@@ -2,12 +2,36 @@ import { NextRequest, NextResponse } from "next/server";
 import { render } from "@react-email/components";
 import { getSupabase } from "@/lib/supabase";
 import { getResend } from "@/lib/resend";
+import { checkRateLimit } from "@/lib/rate-limit";
 import LeadConfirmation from "@/emails/LeadConfirmation";
 
 export async function POST(request: NextRequest) {
+  const ip =
+    request.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
+    request.headers.get("x-real-ip") ??
+    "unknown";
+
+  const { allowed, retryAfterSeconds } = checkRateLimit(ip);
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      {
+        status: 429,
+        headers: retryAfterSeconds
+          ? { "Retry-After": String(retryAfterSeconds) }
+          : {},
+      }
+    );
+  }
+
   const body = await request.json();
 
-  const { name, email, company, phone, budget, message } = body;
+  const { name, email, company, phone, budget, message, website } = body;
+
+  // Honeypot: real users leave this blank; bots fill it in
+  if (website) {
+    return NextResponse.json({ success: true });
+  }
 
   if (!name?.trim() || !email?.trim()) {
     return NextResponse.json(

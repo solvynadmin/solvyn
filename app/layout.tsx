@@ -59,7 +59,12 @@ export const metadata: Metadata = {
     images: ["/solvyn-og-dark.png"],
     site: "@solvynconsulting",
   },
-  icons: { icon: "/favicon.ico" },
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "any" },
+      { url: "/solvyn-icon-light-bg.svg", type: "image/svg+xml" },
+    ],
+  },
   alternates: {
     canonical: SITE_URL,
   },

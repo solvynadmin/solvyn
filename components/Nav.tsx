@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 
 function SunIcon() {
@@ -32,6 +33,7 @@ export function Nav() {
   const [scrolled, setScrolled] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
+  const pathname = usePathname();
 
   useEffect(() => {
     setMounted(true);
@@ -75,7 +77,11 @@ export function Nav() {
         <div className="flex items-center gap-3">
           <a
             href="/about"
-            className="px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+            className={`px-3 py-2 text-sm transition-colors ${
+              pathname === "/about"
+                ? "text-zinc-900 dark:text-zinc-50 font-medium"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50"
+            }`}
             style={{ fontFamily: "var(--font-inter)" }}
           >
             About
@@ -90,8 +96,8 @@ export function Nav() {
           </button>
 
           <a
-            href="#contact"
-            className="px-4 py-2 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 text-sm font-medium hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors"
+            href={pathname === "/" ? "#contact" : "/contact"}
+            className="hidden sm:inline-block px-4 py-2 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 text-sm font-medium hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors whitespace-nowrap"
             style={{ fontFamily: "var(--font-inter)" }}
           >
             Get in touch

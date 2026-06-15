@@ -107,6 +107,16 @@ export function Hero() {
               See what we do <span aria-hidden="true">→</span>
             </a>
           </motion.div>
+
+          <motion.p
+            initial={prefersReducedMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, ease: "easeOut", delay: 0.38 }}
+            className="mt-5 text-sm text-zinc-500 dark:text-zinc-500"
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            Free initial consultation. No commitment required.
+          </motion.p>
         </div>
       </div>
     </section>

@@ -52,14 +52,8 @@ export function Services() {
                 ease: [0.22, 1, 0.36, 1],
                 delay: i * 0.08,
               }}
-              whileHover={prefersReducedMotion ? undefined : { y: -3 }}
-              className="group relative bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-8 transition-colors duration-200 hover:border-teal-600/50 dark:hover:border-teal-400/50 cursor-default"
+              className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-8"
             >
-              {/* Top accent line — reveals on hover */}
-              <span
-                className="absolute top-0 left-8 right-8 h-px bg-teal-600 dark:bg-teal-400 scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left"
-                aria-hidden="true"
-              />
               <h3
                 className="text-xl font-medium text-zinc-900 dark:text-zinc-50 mb-3"
                 style={{ fontFamily: "var(--font-space-grotesk)" }}
