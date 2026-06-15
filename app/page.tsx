@@ -54,7 +54,7 @@ const jsonLd = {
       name: "Solvyn LLC",
       url: "https://solvynconsulting.com",
       description:
-        "Technology and AI consulting for small and medium businesses. We scope, build, and support custom software, AI tools, and systems integrations — end to end, no hand-offs.",
+        "Technology and AI consulting for small and medium businesses. We scope, build, and support custom software, AI tools, and systems integrations. End to end, no hand-offs.",
       email: "contactus@solvynconsulting.com",
       address: {
         "@type": "PostalAddress",

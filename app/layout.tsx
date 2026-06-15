@@ -17,9 +17,9 @@ const inter = Inter({
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://solvynconsulting.com";
-const DEFAULT_TITLE = "Solvyn: Technology and AI Consulting for Growing Businesses";
+const DEFAULT_TITLE = "Solvyn: Technology and AI Consulting for Small Businesses";
 const DEFAULT_DESCRIPTION =
-  "Solvyn scopes, builds, and supports technology and AI systems for small and medium businesses. We take you from strategy to deployment and stay involved after launch — one firm, end to end, no hand-offs.";
+  "Technology and AI consulting for small and medium businesses. Custom software, AI tools, and integrations. Based in Arizona, serving clients nationwide.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -33,12 +33,14 @@ export const metadata: Metadata = {
     "AI consulting",
     "small business technology",
     "AI implementation",
-    "website development",
-    "app development",
     "business systems integration",
     "workflow automation",
     "IT consulting",
     "Arizona technology consulting",
+    "small business AI consultant",
+    "business automation",
+    "technology consultant Phoenix",
+    "custom software small business",
   ],
   authors: [{ name: "Solvyn LLC", url: SITE_URL }],
   creator: "Solvyn LLC",
@@ -50,7 +52,7 @@ export const metadata: Metadata = {
     siteName: "Solvyn",
     locale: "en_US",
     type: "website",
-    images: [{ url: "/solvyn-og-dark.png", width: 1200, height: 630, alt: "Solvyn — Technology and AI Consulting" }],
+    images: [{ url: "/solvyn-og-dark.png", width: 1200, height: 630, alt: "Solvyn: Technology and AI Consulting" }],
   },
   twitter: {
     card: "summary_large_image",

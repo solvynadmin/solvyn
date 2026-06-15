@@ -4,9 +4,9 @@ import { Footer } from "@/components/Footer";
 import { FadeIn } from "@/components/FadeIn";
 
 export const metadata: Metadata = {
-  title: "About Solvyn",
+  title: "About",
   description:
-    "One firm that scopes, builds, and supports technology and AI systems for small and medium businesses. No hand-offs. No translation layer.",
+    "How Solvyn approaches technology and AI consulting for small businesses. One firm, end to end, from strategy through launch and ongoing support.",
   alternates: { canonical: "https://solvynconsulting.com/about" },
 };
 
