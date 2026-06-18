@@ -36,7 +36,10 @@ const jsonLd = {
         "@type": "Country",
         name: "United States",
       },
-      sameAs: ["https://www.instagram.com/solvynconsulting/"],
+      sameAs: [
+        "https://www.instagram.com/solvynconsulting/",
+        "https://www.linkedin.com/company/solvynconsulting/",
+      ],
     },
     {
       "@type": "WebSite",
