@@ -5,7 +5,8 @@ import { Footer } from "@/components/Footer";
 export const metadata: Metadata = {
   title: "Privacy Policy",
   description: "How Solvyn LLC collects, uses, and protects your personal information.",
-  alternates: { canonical: "https://solvynconsulting.com/privacy" },
+  alternates: { canonical: "https://www.solvynconsulting.com/privacy" },
+  openGraph: { url: "https://www.solvynconsulting.com/privacy" },
 };
 
 export default function PrivacyPage() {
@@ -67,7 +68,7 @@ export default function PrivacyPage() {
               <div className="space-y-4 text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 <p>
                   <strong className="font-medium text-zinc-800 dark:text-zinc-200">Information you give us directly.</strong>{" "}
-                  When you fill out a contact form or reach out to us by email, we collect what you provide: your name, email address, company name, and the content of your message. We do not collect this passively — it comes from you choosing to send it.
+                  When you fill out a contact form or reach out to us by email, we collect what you provide: your name, email address, company name, and the content of your message. We do not collect this passively. It comes from you choosing to send it.
                 </p>
                 <p>
                   <strong className="font-medium text-zinc-800 dark:text-zinc-200">Website analytics.</strong>{" "}
@@ -120,7 +121,7 @@ export default function PrivacyPage() {
                   We do not sell your personal information. We do not share it with third parties for their own marketing.
                 </p>
                 <p>
-                  We may work with third-party service providers to help operate the website or manage communications — email platforms, scheduling tools, or a CRM. These providers handle your data only as needed to perform services on our behalf and are not permitted to use it for their own purposes.
+                  We may work with third-party service providers to help operate the website or manage communications: email platforms, scheduling tools, or a CRM. These providers handle your data only as needed to perform services on our behalf and are not permitted to use it for their own purposes.
                 </p>
                 <p>
                   If required by applicable law or a valid legal process, we may disclose information as necessary.

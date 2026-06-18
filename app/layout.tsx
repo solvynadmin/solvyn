@@ -16,7 +16,7 @@ const inter = Inter({
   variable: "--font-inter",
 });
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://solvynconsulting.com";
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.solvynconsulting.com";
 const DEFAULT_TITLE = "Solvyn: Technology and AI Consulting for Small Businesses";
 const DEFAULT_DESCRIPTION =
   "Technology and AI consulting for small and medium businesses. Custom software, AI tools, and integrations. Based in Arizona, serving clients nationwide.";

@@ -101,7 +101,7 @@ const jsonLd = {
               "@type": "Service",
               name: "Systems and Integrations",
               description:
-                "Setup, management, and integration of the tools your business runs on — from initial configuration through day-to-day support.",
+                "Setup, management, and integration of the tools your business runs on, from initial configuration through day-to-day support.",
             },
           },
           {
@@ -110,7 +110,7 @@ const jsonLd = {
               "@type": "Service",
               name: "Strategic Technology Consulting",
               description:
-                "An honest assessment of your current technology stack, a clear picture of what to build, and a realistic plan — no jargon, no overselling.",
+                "An honest assessment of your current technology stack, a clear picture of what to build, and a realistic plan. No jargon, no overselling.",
             },
           },
         ],

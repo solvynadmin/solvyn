@@ -7,7 +7,8 @@ export const metadata: Metadata = {
   title: "About",
   description:
     "How Solvyn approaches technology and AI consulting for small businesses. One firm, end to end, from strategy through launch and ongoing support.",
-  alternates: { canonical: "https://solvynconsulting.com/about" },
+  alternates: { canonical: "https://www.solvynconsulting.com/about" },
+  openGraph: { url: "https://www.solvynconsulting.com/about" },
 };
 
 export default function AboutPage() {

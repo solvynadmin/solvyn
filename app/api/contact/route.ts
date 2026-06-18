@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
         resend.emails.send({
           from,
           to,
-          subject: `New lead: ${trimmedName}${company?.trim() ? ` — ${company.trim()}` : ""}`,
+          subject: `New lead: ${trimmedName}${company?.trim() ? ` (${company.trim()})` : ""}`,
           text: [
             `Name: ${trimmedName}`,
             `Email: ${trimmedEmail}`,

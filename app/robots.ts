@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://solvynconsulting.com/sitemap.xml",
+    sitemap: "https://www.solvynconsulting.com/sitemap.xml",
   };
 }

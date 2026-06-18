@@ -7,7 +7,8 @@ export const metadata: Metadata = {
   title: "Contact",
   description:
     "Contact Solvyn to discuss your technology or AI consulting needs. Tell us what you're building and we'll follow up within one business day.",
-  alternates: { canonical: "https://solvynconsulting.com/contact" },
+  alternates: { canonical: "https://www.solvynconsulting.com/contact" },
+  openGraph: { url: "https://www.solvynconsulting.com/contact" },
 };
 
 export default function ContactPage() {

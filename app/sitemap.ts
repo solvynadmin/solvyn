@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
-const BASE_URL = "https://solvynconsulting.com";
+// www matches the canonical domain submitted to Google Search Console
+const BASE_URL = "https://www.solvynconsulting.com";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

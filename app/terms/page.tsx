@@ -5,7 +5,8 @@ import { Footer } from "@/components/Footer";
 export const metadata: Metadata = {
   title: "Terms and Conditions",
   description: "The terms governing your use of the Solvyn website and consulting services.",
-  alternates: { canonical: "https://solvynconsulting.com/terms" },
+  alternates: { canonical: "https://www.solvynconsulting.com/terms" },
+  openGraph: { url: "https://www.solvynconsulting.com/terms" },
 };
 
 export default function TermsPage() {
@@ -84,7 +85,7 @@ export default function TermsPage() {
               </h2>
               <div className="space-y-4 text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 <p>
-                  All content on this site — including text, graphics, logos, and other materials — is the property of Solvyn LLC or its content providers and is protected by applicable intellectual property laws. Nothing on this site grants you a license to reproduce, distribute, or create derivative works from our content without our prior written permission.
+                  All content on this site, including text, graphics, logos, and other materials, is the property of Solvyn LLC or its content providers and is protected by applicable intellectual property laws. Nothing on this site grants you a license to reproduce, distribute, or create derivative works from our content without our prior written permission.
                 </p>
                 <p>
                   If you quote or reference our content, appropriate attribution to Solvyn LLC is required.
@@ -120,7 +121,7 @@ export default function TermsPage() {
               </h2>
               <div className="space-y-4 text-zinc-600 dark:text-zinc-400 leading-relaxed">
                 <p>
-                  Solvyn provides technology and AI consulting services to businesses. Any engagement with Solvyn for actual services — including website and app development, AI implementation, workflow automation, or strategic consulting — is governed by a separate written agreement between you and Solvyn, not by these Terms and Conditions.
+                  Solvyn provides technology and AI consulting services to businesses. Any engagement with Solvyn for actual services (including website and app development, AI implementation, workflow automation, or strategic consulting) is governed by a separate written agreement between you and Solvyn, not by these Terms and Conditions.
                 </p>
                 <p>
                   These terms cover your use of this website only.
