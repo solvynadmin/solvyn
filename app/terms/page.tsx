@@ -209,7 +209,7 @@ export default function TermsPage() {
               </h2>
               <address className="not-italic text-zinc-600 dark:text-zinc-400 leading-relaxed space-y-1">
                 <p className="font-medium text-zinc-800 dark:text-zinc-200">Solvyn LLC</p>
-                <p>25255 N 19th Ave Unit 4039</p>
+                <p>25255 N 19th Ave</p>
                 <p>Phoenix, AZ 85085</p>
                 <a
                   href="mailto:contactus@solvynconsulting.com"

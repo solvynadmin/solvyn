@@ -26,7 +26,7 @@ const jsonLd = {
       email: "contactus@solvynconsulting.com",
       address: {
         "@type": "PostalAddress",
-        streetAddress: "25255 N 19th Ave Unit 4039",
+        streetAddress: "25255 N 19th Ave",
         addressLocality: "Phoenix",
         addressRegion: "AZ",
         postalCode: "85085",
@@ -59,7 +59,7 @@ const jsonLd = {
       email: "contactus@solvynconsulting.com",
       address: {
         "@type": "PostalAddress",
-        streetAddress: "25255 N 19th Ave Unit 4039",
+        streetAddress: "25255 N 19th Ave",
         addressLocality: "Phoenix",
         addressRegion: "AZ",
         postalCode: "85085",
