@@ -97,6 +97,39 @@ export async function updateLeadEmail(id: string, email: string) {
   revalidatePath("/admin");
 }
 
+export async function sendTestEmailAction(to: string) {
+  const from = process.env.CONTACT_FROM_EMAIL;
+  if (!from) throw new Error("CONTACT_FROM_EMAIL not set");
+
+  const html = await render(
+    OutreachEmail({
+      firstName: "Jim",
+      companyName: "Canyon State Roofing",
+      bodyParagraphs: [
+        "Your website photos aren't loading, so the first thing most visitors see is blank boxes where your work should be.",
+        "I'm Cameron, I run Solvyn, a Phoenix-based consulting firm. I fix exactly this kind of thing for local contractors, no retainer required.",
+      ],
+      auditFindings: [
+        "Homepage photos aren't loading, so visitors see blank boxes instead of your work before they decide to call.",
+        "Your estimate form asks 8 questions before someone can submit, and most people drop off after 3.",
+        "Your ratings and years in business aren't surfacing in Google results, costing you clicks to competitors with weaker reputations.",
+      ],
+      closingParagraph: "Want me to send the full audit?",
+      unsubscribeUrl: "https://www.solvynconsulting.com/unsubscribe?e=test&t=preview",
+    })
+  );
+
+  const { error } = await getResend().emails.send({
+    from,
+    to,
+    subject: "[Test] Solvyn outreach email preview",
+    html,
+  });
+
+  if (error) throw new Error(error.message);
+  return { ok: true };
+}
+
 export async function updateLeadDraft(
   id: string,
   patch: {

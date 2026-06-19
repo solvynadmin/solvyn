@@ -5,6 +5,7 @@ import { logoutAction } from "./login/actions";
 import { RunPipelineButton } from "./_components/RunPipelineButton";
 import { PendingLeadsSection } from "./_components/PendingLeadsSection";
 import { PipelineHistory } from "./_components/PipelineHistory";
+import { SendTestEmailButton } from "./_components/SendTestEmailButton";
 
 export const metadata: Metadata = { title: "Lead Queue" };
 export const dynamic = "force-dynamic";
@@ -47,15 +48,18 @@ export default async function AdminPage() {
             </a>
           </nav>
         </div>
-        <form action={logoutAction}>
-          <button
-            type="submit"
-            className="text-sm text-zinc-400 dark:text-zinc-600 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            Sign out
-          </button>
-        </form>
+        <div className="flex items-center gap-5">
+          <SendTestEmailButton />
+          <form action={logoutAction}>
+            <button
+              type="submit"
+              className="text-sm text-zinc-400 dark:text-zinc-600 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Sign out
+            </button>
+          </form>
+        </div>
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-10 space-y-10">

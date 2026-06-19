@@ -30,6 +30,11 @@ export default function OutreachEmail({
   closingParagraph,
   unsubscribeUrl,
 }: OutreachEmailProps) {
+  const greetingName =
+    firstName && firstName !== "there" && firstName.trim() !== ""
+      ? firstName
+      : `${companyName} team`;
+
   return (
     <Html lang="en">
       <Head>
@@ -70,7 +75,7 @@ export default function OutreachEmail({
 
           {/* Body content */}
           <Section style={content}>
-            <Text style={greeting}>Hi {firstName},</Text>
+            <Text style={greeting}>Hi {greetingName},</Text>
 
             {bodyParagraphs.map((p, i) => (
               <Text key={i} style={bodyText}>{p}</Text>

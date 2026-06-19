@@ -73,11 +73,16 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
     day: "numeric",
   });
 
+  const displayName =
+    lead.first_name && lead.first_name !== "there" && lead.first_name.trim() !== ""
+      ? lead.first_name
+      : null;
+
   if (result === "sent") {
     return (
       <div className="rounded-[10px] border border-teal-200 dark:border-teal-900 bg-teal-50 dark:bg-teal-950/30 px-5 py-4 flex items-center gap-3">
         <span className="text-teal-700 dark:text-teal-400 text-sm" style={{ fontFamily: "var(--font-inter)" }}>
-          Sent to {lead.first_name} at {lead.company_name}.
+          Sent to {displayName ? `${displayName} at ` : ""}{lead.company_name}.
         </span>
       </div>
     );
@@ -127,7 +132,7 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
             </span>
           </div>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5" style={{ fontFamily: "var(--font-inter)" }}>
-            {lead.first_name}
+            {displayName ?? <span className="text-zinc-400 dark:text-zinc-500 italic">no name</span>}
             {lead.recipient_email ? ` · ${lead.recipient_email}` : (
               <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">no email</span>
             )}
