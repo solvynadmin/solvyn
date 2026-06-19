@@ -4,7 +4,12 @@ import { getPipelineSettings } from "./pipeline-settings";
 import { recordPipelineRun } from "./pipeline-runs";
 import { searchWeb } from "./search";
 
-type RawLead = {
+export type PipelineResult =
+  | { skipped: true; message: string }
+  | { added: number; message?: string }
+  | { added: number; industry: string; location: string; companies: string[] };
+
+type Business = {
   company_name: string;
   website_url: string | null;
   first_name: string;
@@ -12,7 +17,7 @@ type RawLead = {
   phone: string | null;
 };
 
-type LeadDraft = RawLead & {
+type LeadDraft = Business & {
   subject: string;
   body_paragraphs: string[];
   audit_findings: string[];
@@ -20,80 +25,184 @@ type LeadDraft = RawLead & {
   category: string;
 };
 
-export type PipelineResult =
-  | { skipped: true; message: string }
-  | { added: number; message?: string }
-  | { added: number; industry: string; location: string; companies: string[] };
-
 function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-async function runClaude(client: Anthropic, prompt: string, useWebSearch = false, forceSearch = false): Promise<string> {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const tools: any[] = useWebSearch ? [{ type: "web_search_20250305", name: "web_search" }] : [];
-  const messages: Anthropic.MessageParam[] = [{ role: "user", content: prompt }];
-  let firstCall = true;
-
-  for (let round = 0; round < 10; round++) {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const createParams: any = {
-      model: "claude-sonnet-4-6",
-      max_tokens: 4096,
-      tools: tools.length ? tools : undefined,
-      messages,
-    };
-    // Force the first call to use web search so Claude doesn't answer from training data
-    if (forceSearch && firstCall && tools.length) {
-      createParams.tool_choice = { type: "any" };
-    }
-    firstCall = false;
-    const response = await client.messages.create(createParams);
-
-    if (response.stop_reason === "end_turn") {
-      const textBlock = response.content.find((b) => b.type === "text");
-      return textBlock ? (textBlock as Anthropic.TextBlock).text : "";
-    }
-
-    if (response.stop_reason === "tool_use") {
-      const toolUseBlocks = response.content.filter((b) => b.type === "tool_use") as Anthropic.ToolUseBlock[];
-      messages.push({ role: "assistant", content: response.content });
-
-      const toolResults: Anthropic.ToolResultBlockParam[] = await Promise.all(
-        toolUseBlocks.map(async (tu) => {
-          let content = "No results.";
-          try {
-            const input = tu.input as { query?: string };
-            const query = input?.query ?? String(tu.input);
-            content = await searchWeb(query);
-          } catch (err) {
-            content = `Search error: ${String(err)}`;
-          }
-          return { type: "tool_result" as const, tool_use_id: tu.id, content };
-        })
-      );
-
-      messages.push({ role: "user", content: toolResults });
-    }
-  }
-
-  const last = messages[messages.length - 1];
-  if (last.role === "assistant" && Array.isArray(last.content)) {
-    const textBlock = last.content.find((b) => (b as Anthropic.ContentBlock).type === "text");
-    return textBlock ? (textBlock as Anthropic.TextBlock).text : "";
-  }
-  return "";
-}
-
 function extractJson<T>(text: string): T | null {
-  const match = text.match(/```(?:json)?\s*([\s\S]*?)```/) ?? text.match(/(\[[\s\S]*\]|\{[\s\S]*\})/);
-  if (!match) return null;
-  try {
-    return JSON.parse(match[1] ?? match[0]) as T;
-  } catch {
-    return null;
-  }
+  const fence = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  // match first [ or { through to its pair using a broad grab then let JSON.parse validate
+  const raw = text.match(/(\[[\s\S]*\]|\{[\s\S]*\})/);
+  const src = fence?.[1] ?? raw?.[1];
+  if (!src) return null;
+  try { return JSON.parse(src) as T; } catch { return null; }
 }
+
+// Single cheap Claude call — no tools, no loops
+async function callClaude(
+  client: Anthropic,
+  prompt: string,
+  model: "haiku" | "sonnet" = "haiku",
+): Promise<string> {
+  const modelId =
+    model === "haiku" ? "claude-haiku-4-5-20251001" : "claude-sonnet-4-6";
+
+  const res = await client.messages.create({
+    model: modelId,
+    max_tokens: 4096,
+    messages: [{ role: "user", content: prompt }],
+  });
+
+  const block = res.content.find((b) => b.type === "text");
+  return block ? (block as Anthropic.TextBlock).text : "";
+}
+
+// Step 1 — Serper finds businesses (free, no Claude)
+async function discoverBusinesses(
+  industryLabel: string,
+  location: string,
+  count: number,
+): Promise<string> {
+  const results = await searchWeb(
+    `"${industryLabel}" "${location}" small business independent -franchise -chain -yelp.com -yellowpages.com`,
+  );
+  return results;
+}
+
+// Step 2 — Haiku extracts structured list from search results (1 cheap call)
+async function extractBusinessList(
+  client: Anthropic,
+  searchResults: string,
+  industryLabel: string,
+  location: string,
+  count: number,
+): Promise<Business[]> {
+  const prompt = `
+You are parsing web search results to extract real small business listings.
+
+Search results:
+${searchResults}
+
+Extract up to ${count} independently-owned ${industryLabel} businesses in ${location} from the results above.
+Skip directories, national chains, franchises, and any result that is not a specific local business.
+
+For each business, extract from the search snippet what you can:
+- company_name: the business name
+- website_url: their website URL (from the search result link, not a directory page)
+- first_name: owner or contact first name if mentioned, otherwise "there"
+- recipient_email: email address if visible in the snippet, otherwise null
+- phone: phone number if visible in the snippet, otherwise null
+
+Return ONLY a JSON array, no other text:
+[{"company_name":"...","website_url":"...","first_name":"...","recipient_email":null,"phone":null}]
+`.trim();
+
+  const text = await callClaude(client, prompt, "haiku");
+  return extractJson<Business[]>(text) ?? [];
+}
+
+// Step 3 — Serper looks up contact info for each business (free, no Claude)
+async function fetchContactData(businesses: Business[]): Promise<(Business & { contactSnippets: string })[]> {
+  return Promise.all(
+    businesses.map(async (b) => {
+      try {
+        const query = b.website_url
+          ? `site:${b.website_url.replace(/^https?:\/\//, "").split("/")[0]} email contact`
+          : `"${b.company_name}" ${b.phone ?? ""} email contact`;
+        const snippets = await searchWeb(query);
+        return { ...b, contactSnippets: snippets };
+      } catch {
+        return { ...b, contactSnippets: "" };
+      }
+    }),
+  );
+}
+
+// Step 4 — Haiku pulls emails/names from contact snippets (1 cheap call)
+async function enrichContactInfo(
+  client: Anthropic,
+  businesses: (Business & { contactSnippets: string })[],
+): Promise<Business[]> {
+  const prompt = `
+Extract contact information from the search snippets below. For each business, find an email address and owner/manager first name if present.
+
+${businesses
+  .map(
+    (b, i) => `[${i}] ${b.company_name}
+Snippets: ${b.contactSnippets.slice(0, 400)}`,
+  )
+  .join("\n\n")}
+
+Return a JSON array in the same order, updating email and first_name where found:
+[{"company_name":"...","website_url":"...","first_name":"...","recipient_email":"...or null","phone":"...or null"}]
+
+Rules:
+- Only include emails that appear literally in the snippets — do not guess.
+- If no email found, set recipient_email to null.
+- If no first name found, keep "there".
+
+Return ONLY the JSON array.
+`.trim();
+
+  const text = await callClaude(client, prompt, "haiku");
+  const enriched = extractJson<Business[]>(text);
+  if (!enriched) return businesses;
+
+  // Merge: keep original data for anything the enrichment didn't find
+  return businesses.map((b, i) => ({
+    ...b,
+    first_name: enriched[i]?.first_name || b.first_name,
+    recipient_email: enriched[i]?.recipient_email || b.recipient_email,
+    phone: enriched[i]?.phone || b.phone,
+  }));
+}
+
+// Step 5 — Sonnet drafts ALL emails in one call
+async function draftAllEmails(
+  client: Anthropic,
+  leads: Business[],
+  industryLabel: string,
+  emailTone: string,
+): Promise<LeadDraft[]> {
+  const prompt = `
+You are drafting cold outreach emails for Solvyn, a Phoenix-based technology and AI consulting firm.
+
+${emailTone}
+
+Draft emails for each of these ${industryLabel} businesses. For each, identify 3 specific website or digital marketing issues that are costing them leads — framed as business impact, not technical terms. Then write the email.
+
+Businesses:
+${leads.map((l, i) => `[${i}] ${l.company_name} | website: ${l.website_url ?? "none"} | contact: ${l.first_name}`).join("\n")}
+
+Return ONLY a JSON array in the same order:
+[
+  {
+    "subject": "under 60 chars",
+    "audit_findings": ["finding 1","finding 2","finding 3"],
+    "body_paragraphs": ["opening sentence","problem paragraph","what Solvyn does"],
+    "closing_paragraph": "soft CTA asking for 15 minutes"
+  }
+]
+`.trim();
+
+  const text = await callClaude(client, prompt, "sonnet");
+  const drafts = extractJson<{
+    subject: string;
+    audit_findings: string[];
+    body_paragraphs: string[];
+    closing_paragraph: string;
+  }[]>(text);
+
+  if (!drafts) return [];
+
+  return leads.map((lead, i) => ({
+    ...lead,
+    ...(drafts[i] ?? { subject: "", audit_findings: [], body_paragraphs: [], closing_paragraph: "" }),
+    category: "",
+  }));
+}
+
+// ─── Main entry point ────────────────────────────────────────────────────────
 
 export async function runPipeline({ force = false }: { force?: boolean } = {}): Promise<PipelineResult> {
   const apiKey = process.env.ANTHROPIC_API_KEY;
@@ -118,7 +227,7 @@ export async function runPipeline({ force = false }: { force?: boolean } = {}): 
       (settings.frequency === "weekdays" && day >= 1 && day <= 5);
 
     if (!shouldRun) {
-      const r: PipelineResult = { skipped: true, message: `Frequency is "${settings.frequency}" — not scheduled to run today` };
+      const r: PipelineResult = { skipped: true, message: `Not scheduled to run today (${settings.frequency})` };
       await recordPipelineRun(r);
       return r;
     }
@@ -134,144 +243,87 @@ export async function runPipeline({ force = false }: { force?: boolean } = {}): 
   const industry = pickRandom(activeIndustries);
   const location = pickRandom(settings.locations);
   const maxLeads = settings.max_leads_per_run;
-  const emailTone = settings.email_tone;
 
-  const discoverPrompt = `
-Use web search right now to find ${maxLeads + 2} small, independently-owned ${industry.label} in ${location}.
+  // ── Step 1: Serper discovery (free) ─────────────────────────────────────
+  const searchResults = await discoverBusinesses(industry.label, location, maxLeads + 2);
 
-Search for something like: "${industry.label} ${location} site:yelp.com OR site:google.com/maps" or browse local directories to find businesses you would not know from training data — small operators, not well-known chains or franchises.
+  // ── Step 2: Haiku extracts business list (1 cheap call) ─────────────────
+  const rawBusinesses = await extractBusinessList(
+    client, searchResults, industry.label, location, maxLeads + 2,
+  );
 
-For each business found via search:
-1. Visit their website (if they have one) and check the homepage, contact page, about page, and footer for an email address.
-2. Check their Google Business profile for a contact email.
-3. Note the owner or manager's first name if visible anywhere.
-
-Return ONLY a JSON array — no explanation, no markdown outside the array:
-[
-  {
-    "company_name": "Example Plumbing Co",
-    "website_url": "https://exampleplumbing.com",
-    "first_name": "Mike",
-    "recipient_email": "mike@exampleplumbing.com",
-    "phone": "602-555-1234"
-  }
-]
-
-Rules:
-- Only include real businesses you found via search — do not use training data.
-- If no email found after checking website + Google listing: set recipient_email to null. Never guess.
-- If no first name found: use "there".
-- No national chains, franchises, or businesses with 10+ locations.
-`.trim();
-
-  const discoverText = await runClaude(client, discoverPrompt, true, true);
-  const rawLeads: RawLead[] = extractJson<RawLead[]>(discoverText) ?? [];
-
-  const validLeads = rawLeads.filter((l) => l.company_name);
-  if (!validLeads.length) {
-    return { added: 0, message: "No businesses found" };
+  if (!rawBusinesses.length) {
+    const r: PipelineResult = { added: 0, message: "No businesses found in search results" };
+    await recordPipelineRun(r);
+    return r;
   }
 
-  // Dedup by email (when present) and by website/company name
-  const emailsToCheck = validLeads.filter((l) => l.recipient_email).map((l) => l.recipient_email!.toLowerCase());
-  const urlsToCheck = validLeads.filter((l) => l.website_url).map((l) => l.website_url!.toLowerCase());
-  const namesToCheck = validLeads.map((l) => l.company_name.toLowerCase());
+  // ── Dedup BEFORE spending more credits ───────────────────────────────────
+  const urlsToCheck = rawBusinesses.filter((b) => b.website_url).map((b) => b.website_url!.toLowerCase());
+  const namesToCheck = rawBusinesses.map((b) => b.company_name.toLowerCase());
 
-  const [{ data: existingByEmail }, { data: existingByUrl }, { data: existingByName }, { data: unsubscribed }] =
-    await Promise.all([
-      emailsToCheck.length
-        ? sb.from("outreach_leads").select("recipient_email").in("recipient_email", emailsToCheck)
-        : Promise.resolve({ data: [] }),
-      urlsToCheck.length
-        ? sb.from("outreach_leads").select("website_url").in("website_url", urlsToCheck)
-        : Promise.resolve({ data: [] }),
-      sb.from("outreach_leads").select("company_name").in("company_name", namesToCheck),
-      emailsToCheck.length
-        ? sb.from("outreach_unsubscribes").select("email").in("email", emailsToCheck)
-        : Promise.resolve({ data: [] }),
-    ]);
-
-  const seenEmails = new Set([
-    ...(existingByEmail ?? []).map((r) => r.recipient_email?.toLowerCase()).filter(Boolean),
-    ...(unsubscribed ?? []).map((r) => r.email.toLowerCase()),
+  const [{ data: byUrl }, { data: byName }] = await Promise.all([
+    urlsToCheck.length
+      ? sb.from("outreach_leads").select("website_url").in("website_url", urlsToCheck)
+      : Promise.resolve({ data: [] }),
+    sb.from("outreach_leads").select("company_name").in("company_name", namesToCheck),
   ]);
-  const seenUrls = new Set((existingByUrl ?? []).map((r) => r.website_url?.toLowerCase()).filter(Boolean));
-  const seenNames = new Set((existingByName ?? []).map((r) => r.company_name.toLowerCase()));
 
-  const newLeads = validLeads
-    .filter((l) => {
-      if (l.recipient_email && seenEmails.has(l.recipient_email.toLowerCase())) return false;
-      if (l.website_url && seenUrls.has(l.website_url.toLowerCase())) return false;
-      if (seenNames.has(l.company_name.toLowerCase())) return false;
+  const seenUrls = new Set((byUrl ?? []).map((r) => r.website_url?.toLowerCase()).filter(Boolean));
+  const seenNames = new Set((byName ?? []).map((r) => r.company_name.toLowerCase()));
+
+  const newBusinesses = rawBusinesses
+    .filter((b) => {
+      if (b.website_url && seenUrls.has(b.website_url.toLowerCase())) return false;
+      if (seenNames.has(b.company_name.toLowerCase())) return false;
       return true;
     })
     .slice(0, maxLeads);
 
-  if (!newLeads.length) {
-    const r: PipelineResult = { added: 0, message: "All discovered leads already in queue or unsubscribed" };
+  if (!newBusinesses.length) {
+    const r: PipelineResult = { added: 0, message: "All discovered businesses already in queue" };
     await recordPipelineRun(r);
     return r;
   }
 
-  const drafted: LeadDraft[] = [];
+  // ── Step 3: Serper contact lookup (free, parallel) ───────────────────────
+  const withContactData = await fetchContactData(newBusinesses);
 
-  for (const lead of newLeads) {
-    const auditPrompt = `
-You are helping draft a cold outreach email for Solvyn, a Phoenix-based technology and AI consulting firm.
+  // ── Step 4: Haiku enriches contact info (1 cheap call) ──────────────────
+  const enrichedLeads = await enrichContactInfo(client, withContactData);
 
-Business to reach: ${lead.company_name}
-Website: ${lead.website_url ?? "unknown"}
-Contact: ${lead.first_name}
-Industry: ${industry.label}
-
-${lead.website_url
-  ? "Use web search to visit their website and identify 3-4 specific issues that are costing them leads or customers. Focus on things a small business owner would immediately recognize as a problem: slow load time, no way to book online, missing reviews section, no clear phone number visible, outdated design, no response to Google reviews, etc."
-  : `Without a website URL, identify 3 common gaps for ${industry.label} in Phoenix that likely apply to this business.`}
-
-${emailTone}
-
-Return ONLY a JSON object with this exact shape:
-{
-  "subject": "one compelling subject line (under 60 chars)",
-  "audit_findings": [
-    "Finding 1 — framed as what it costs them",
-    "Finding 2 — framed as what it costs them",
-    "Finding 3 — framed as what it costs them"
-  ],
-  "body_paragraphs": [
-    "Opening sentence addressing ${lead.first_name} and the specific thing you noticed.",
-    "Second paragraph explaining how these issues are losing them business.",
-    "Third paragraph: what Solvyn would do and the outcome."
-  ],
-  "closing_paragraph": "Soft CTA — asking if they have 15 minutes, not a hard sell."
-}
-`.trim();
-
-    try {
-      const draftText = await runClaude(client, auditPrompt, !!lead.website_url);
-      const draft = extractJson<{
-        subject: string;
-        audit_findings: string[];
-        body_paragraphs: string[];
-        closing_paragraph: string;
-      }>(draftText);
-      if (draft) drafted.push({ ...lead, ...draft, category: industry.slug });
-    } catch (err) {
-      console.error(`[pipeline] draft error for ${lead.company_name}`, err);
-    }
+  // ── Dedup unsubscribes by email ──────────────────────────────────────────
+  const emails = enrichedLeads.filter((l) => l.recipient_email).map((l) => l.recipient_email!.toLowerCase());
+  let unsubEmails = new Set<string>();
+  if (emails.length) {
+    const { data: unsubscribed } = await sb.from("outreach_unsubscribes").select("email").in("email", emails);
+    unsubEmails = new Set((unsubscribed ?? []).map((r: { email: string }) => r.email.toLowerCase()));
   }
+  const finalLeads = enrichedLeads.filter(
+    (l) => !l.recipient_email || !unsubEmails.has(l.recipient_email.toLowerCase()),
+  );
 
-  if (!drafted.length) {
-    const r: PipelineResult = { added: 0, message: "Drafting failed for all leads" };
+  if (!finalLeads.length) {
+    const r: PipelineResult = { added: 0, message: "All leads unsubscribed" };
     await recordPipelineRun(r);
     return r;
   }
 
-  const rows = drafted.map((d) => ({
+  // ── Step 5: Sonnet drafts all emails in one call ──────────────────────────
+  const drafts = await draftAllEmails(client, finalLeads, industry.label, settings.email_tone);
+
+  if (!drafts.length) {
+    const r: PipelineResult = { added: 0, message: "Email drafting failed" };
+    await recordPipelineRun(r);
+    return r;
+  }
+
+  // ── Step 6: Insert ───────────────────────────────────────────────────────
+  const rows = drafts.map((d) => ({
     first_name: d.first_name,
     company_name: d.company_name,
     website_url: d.website_url,
-    category: d.category,
+    category: industry.slug,
     recipient_email: d.recipient_email ?? null,
     phone: d.phone,
     subject: d.subject,
@@ -281,10 +333,15 @@ Return ONLY a JSON object with this exact shape:
     status: "pending",
   }));
 
-  const { error: insertError } = await sb.from("outreach_leads").insert(rows);
-  if (insertError) throw new Error(insertError.message);
+  const { error } = await sb.from("outreach_leads").insert(rows);
+  if (error) throw new Error(error.message);
 
-  const result: PipelineResult = { added: rows.length, industry: industry.label, location, companies: rows.map((r) => r.company_name) };
+  const result: PipelineResult = {
+    added: rows.length,
+    industry: industry.label,
+    location,
+    companies: rows.map((r) => r.company_name),
+  };
   await recordPipelineRun(result);
   return result;
 }
