@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { getSupabase } from "./supabase";
 import { getPipelineSettings } from "./pipeline-settings";
 import { recordPipelineRun } from "./pipeline-runs";
+import { searchWeb } from "./search";
 
 type RawLead = {
   company_name: string;
@@ -57,11 +58,21 @@ async function runClaude(client: Anthropic, prompt: string, useWebSearch = false
     if (response.stop_reason === "tool_use") {
       const toolUseBlocks = response.content.filter((b) => b.type === "tool_use") as Anthropic.ToolUseBlock[];
       messages.push({ role: "assistant", content: response.content });
-      const toolResults: Anthropic.ToolResultBlockParam[] = toolUseBlocks.map((tu) => ({
-        type: "tool_result",
-        tool_use_id: tu.id,
-        content: "Search completed.",
-      }));
+
+      const toolResults: Anthropic.ToolResultBlockParam[] = await Promise.all(
+        toolUseBlocks.map(async (tu) => {
+          let content = "No results.";
+          try {
+            const input = tu.input as { query?: string };
+            const query = input?.query ?? String(tu.input);
+            content = await searchWeb(query);
+          } catch (err) {
+            content = `Search error: ${String(err)}`;
+          }
+          return { type: "tool_result" as const, tool_use_id: tu.id, content };
+        })
+      );
+
       messages.push({ role: "user", content: toolResults });
     }
   }

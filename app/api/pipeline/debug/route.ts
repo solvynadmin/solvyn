@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { getPipelineSettings } from "@/lib/pipeline-settings";
+import { searchWeb } from "@/lib/search";
 
 export const maxDuration = 60;
 
@@ -36,7 +37,16 @@ export async function GET(req: NextRequest) {
     checks.settings = { error: String(err) };
   }
 
-  // 3. Basic Claude call (no web search)
+  // 3. Serper search test
+  checks.env = { ...(checks.env as object), SERPER_API_KEY: !!process.env.SERPER_API_KEY };
+  try {
+    const results = await searchWeb("HVAC companies Phoenix AZ small business");
+    checks.serper = { ok: true, preview: results.slice(0, 300) };
+  } catch (err) {
+    checks.serper = { error: String(err) };
+  }
+
+  // 4. Basic Claude call (no web search)
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     checks.claude_basic = { error: "No API key" };
@@ -92,10 +102,16 @@ export async function GET(req: NextRequest) {
       if (res.stop_reason === "tool_use") {
         const tubs = res.content.filter((b) => b.type === "tool_use") as Anthropic.ToolUseBlock[];
         messages.push({ role: "assistant", content: res.content });
-        messages.push({
-          role: "user",
-          content: tubs.map((tu) => ({ type: "tool_result" as const, tool_use_id: tu.id, content: "Search done." })),
-        });
+        const toolResults = await Promise.all(
+          tubs.map(async (tu) => {
+            const input = tu.input as { query?: string };
+            const query = input?.query ?? String(tu.input);
+            let content = "No results.";
+            try { content = await searchWeb(query); } catch (e) { content = String(e); }
+            return { type: "tool_result" as const, tool_use_id: tu.id, content };
+          })
+        );
+        messages.push({ role: "user", content: toolResults });
       }
     }
 
