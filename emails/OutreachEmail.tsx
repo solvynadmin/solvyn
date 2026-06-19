@@ -139,9 +139,9 @@ OutreachEmail.PreviewProps = {
 /* ── Styles ─────────────────────────────────────────────────────────── */
 
 const body: React.CSSProperties = {
-  backgroundColor: "#f4f4f5",
+  backgroundColor: "#09090b",
   margin: 0,
-  padding: "32px 0",
+  padding: 0,
 };
 
 const container: React.CSSProperties = {
@@ -149,7 +149,7 @@ const container: React.CSSProperties = {
   maxWidth: "580px",
   margin: "0 auto",
   overflow: "hidden",
-  borderRadius: "8px",
+  borderRadius: 0,
 };
 
 const header: React.CSSProperties = {

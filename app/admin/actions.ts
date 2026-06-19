@@ -51,11 +51,11 @@ export async function sendLeadEmail(id: string) {
     })
   );
 
-  const from = process.env.CONTACT_FROM_EMAIL;
-  if (!from) throw new Error("CONTACT_FROM_EMAIL not set");
+  const fromEmail = process.env.CONTACT_FROM_EMAIL;
+  if (!fromEmail) throw new Error("CONTACT_FROM_EMAIL not set");
 
   const { error: sendError } = await getResend().emails.send({
-    from,
+    from: `Cameron from Solvyn <${fromEmail}>`,
     to: lead.recipient_email,
     subject: lead.subject,
     html,
@@ -98,8 +98,8 @@ export async function updateLeadEmail(id: string, email: string) {
 }
 
 export async function sendTestEmailAction(to: string) {
-  const from = process.env.CONTACT_FROM_EMAIL;
-  if (!from) throw new Error("CONTACT_FROM_EMAIL not set");
+  const fromEmail = process.env.CONTACT_FROM_EMAIL;
+  if (!fromEmail) throw new Error("CONTACT_FROM_EMAIL not set");
 
   const html = await render(
     OutreachEmail({
@@ -120,7 +120,7 @@ export async function sendTestEmailAction(to: string) {
   );
 
   const { error } = await getResend().emails.send({
-    from,
+    from: `Cameron from Solvyn <${fromEmail}>`,
     to,
     subject: "[Test] Solvyn outreach email preview",
     html,
