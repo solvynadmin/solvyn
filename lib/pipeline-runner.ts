@@ -6,7 +6,7 @@ import { searchWeb } from "./search";
 
 export type PipelineResult =
   | { skipped: true; message: string }
-  | { added: number; message?: string }
+  | { added: number; message?: string; debug?: string }
   | { added: number; industry: string; location: string; companies: string[] };
 
 type Business = {
@@ -61,10 +61,11 @@ async function callClaude(
 async function discoverBusinesses(
   industryLabel: string,
   location: string,
-  count: number,
 ): Promise<string> {
+  // Extract the city name only (e.g. "Phoenix, AZ" → "Phoenix")
+  const city = location.split(",")[0].trim();
   const results = await searchWeb(
-    `"${industryLabel}" "${location}" small business independent -franchise -chain -yelp.com -yellowpages.com`,
+    `${industryLabel} ${city} AZ independent small business`,
   );
   return results;
 }
@@ -245,7 +246,7 @@ export async function runPipeline({ force = false }: { force?: boolean } = {}): 
   const maxLeads = settings.max_leads_per_run;
 
   // ── Step 1: Serper discovery (free) ─────────────────────────────────────
-  const searchResults = await discoverBusinesses(industry.label, location, maxLeads + 2);
+  const searchResults = await discoverBusinesses(industry.label, location);
 
   // ── Step 2: Haiku extracts business list (1 cheap call) ─────────────────
   const rawBusinesses = await extractBusinessList(
@@ -253,7 +254,11 @@ export async function runPipeline({ force = false }: { force?: boolean } = {}): 
   );
 
   if (!rawBusinesses.length) {
-    const r: PipelineResult = { added: 0, message: "No businesses found in search results" };
+    const r: PipelineResult = {
+      added: 0,
+      message: "No businesses found in search results",
+      debug: `Serper returned ${searchResults.length} chars. Haiku returned no parseable JSON array.`,
+    };
     await recordPipelineRun(r);
     return r;
   }
