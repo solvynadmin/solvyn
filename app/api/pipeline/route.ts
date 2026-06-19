@@ -110,6 +110,18 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ skipped: true, message: "Pipeline is disabled in settings" });
   }
 
+  // Check frequency against today (UTC day: 0=Sun,1=Mon,...,6=Sat)
+  const day = new Date().getUTCDay();
+  const shouldRun =
+    settings.frequency === "daily" ||
+    (settings.frequency === "weekly" && day === 1) ||
+    (settings.frequency === "twice_weekly" && (day === 1 || day === 4)) ||
+    (settings.frequency === "weekdays" && day >= 1 && day <= 5);
+
+  if (!shouldRun) {
+    return NextResponse.json({ skipped: true, message: `Frequency is "${settings.frequency}" — not scheduled to run today` });
+  }
+
   const activeIndustries = settings.industries.filter((i) => i.enabled);
   if (!activeIndustries.length) {
     return NextResponse.json({ skipped: true, message: "No industries enabled" });

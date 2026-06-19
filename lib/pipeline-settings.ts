@@ -7,12 +7,15 @@ export type IndustryConfig = {
   enabled: boolean;
 };
 
+export type Frequency = "daily" | "twice_weekly" | "weekly" | "weekdays";
+
 export type PipelineSettings = {
   enabled: boolean;
   industries: IndustryConfig[];
   locations: string[];
   max_leads_per_run: number;
   email_tone: string;
+  frequency: Frequency;
 };
 
 export function defaultSettings(): PipelineSettings {
@@ -22,6 +25,7 @@ export function defaultSettings(): PipelineSettings {
     locations: [...LOCATIONS],
     max_leads_per_run: MAX_LEADS_PER_RUN,
     email_tone: EMAIL_TONE,
+    frequency: "weekly",
   };
 }
 
@@ -35,6 +39,7 @@ export async function getPipelineSettings(): Promise<PipelineSettings> {
     locations: data.locations as string[],
     max_leads_per_run: data.max_leads_per_run,
     email_tone: data.email_tone,
+    frequency: (data.frequency ?? "weekly") as Frequency,
   };
 }
 

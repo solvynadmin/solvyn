@@ -2,7 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { saveSettingsAction } from "../actions";
-import type { PipelineSettings, IndustryConfig } from "@/lib/pipeline-settings";
+import type { PipelineSettings, IndustryConfig, Frequency } from "@/lib/pipeline-settings";
+
+const FREQUENCY_OPTIONS: { value: Frequency; label: string; detail: string }[] = [
+  { value: "daily",        label: "Daily",        detail: "Every day at 9 AM UTC" },
+  { value: "twice_weekly", label: "Twice a week", detail: "Monday and Thursday" },
+  { value: "weekly",       label: "Weekly",       detail: "Every Monday" },
+  { value: "weekdays",     label: "Weekdays",     detail: "Monday through Friday" },
+];
 
 export function SettingsForm({ settings }: { settings: PipelineSettings }) {
   const [enabled, setEnabled] = useState(settings.enabled);
@@ -10,6 +17,7 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
   const [locations, setLocations] = useState(settings.locations.join("\n"));
   const [maxLeads, setMaxLeads] = useState(settings.max_leads_per_run);
   const [emailTone, setEmailTone] = useState(settings.email_tone);
+  const [frequency, setFrequency] = useState<Frequency>(settings.frequency);
   const [newIndustryLabel, setNewIndustryLabel] = useState("");
   const [saved, setSaved] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -41,6 +49,7 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
     formData.set("industries", JSON.stringify(industries));
     formData.set("locations", locations);
     formData.set("max_leads_per_run", String(maxLeads));
+    formData.set("frequency", frequency);
     formData.set("email_tone", emailTone);
 
     startTransition(async () => {
@@ -189,6 +198,35 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
         <p className="text-xs text-zinc-400 dark:text-zinc-500" style={{ fontFamily: "var(--font-inter)" }}>
           How many new leads to find and draft emails for per run.
         </p>
+      </div>
+
+      {/* Frequency */}
+      <div className={card}>
+        {label("Run frequency")}
+        <div className="grid grid-cols-2 gap-2">
+          {FREQUENCY_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => { setFrequency(opt.value); setSaved(false); }}
+              className={`text-left px-4 py-3 rounded-[7px] border transition-colors ${
+                frequency === opt.value
+                  ? "border-teal-700 dark:border-teal-400 bg-teal-50 dark:bg-teal-950/30"
+                  : "border-zinc-200 dark:border-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600"
+              }`}
+            >
+              <p
+                className={`text-sm font-medium ${frequency === opt.value ? "text-teal-700 dark:text-teal-400" : "text-zinc-700 dark:text-zinc-300"}`}
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                {opt.label}
+              </p>
+              <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5" style={{ fontFamily: "var(--font-inter)" }}>
+                {opt.detail}
+              </p>
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Email tone */}
