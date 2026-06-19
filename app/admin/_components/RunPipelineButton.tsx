@@ -26,7 +26,7 @@ function resultMessage(result: PipelineResult): { text: string; ok: boolean } {
   return { text: "Run complete.", ok: true };
 }
 
-export function RunPipelineButton() {
+export function RunPipelineButton({ lastRun }: { lastRun?: { ran_at: string; leads_added: number; skipped: boolean } | null }) {
   const [status, setStatus] = useState<Status>({ type: "idle" });
   const [isPending, startTransition] = useTransition();
 
@@ -82,6 +82,14 @@ export function RunPipelineButton() {
           </span>
         );
       })()}
+
+      {status.type === "idle" && lastRun && (
+        <span className="text-xs text-zinc-400 dark:text-zinc-500" style={{ fontFamily: "var(--font-inter)" }}>
+          Last run {new Date(lastRun.ran_at).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" })}
+          {" · "}
+          {lastRun.skipped ? "skipped" : `${lastRun.leads_added} lead${lastRun.leads_added === 1 ? "" : "s"} added`}
+        </span>
+      )}
 
       {status.type === "error" && (
         <span className="text-xs text-red-500 dark:text-red-400" style={{ fontFamily: "var(--font-inter)" }}>

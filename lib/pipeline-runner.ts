@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { getSupabase } from "./supabase";
 import { getPipelineSettings } from "./pipeline-settings";
+import { recordPipelineRun } from "./pipeline-runs";
 
 type RawLead = {
   company_name: string;
@@ -92,7 +93,9 @@ export async function runPipeline({ force = false }: { force?: boolean } = {}): 
   const settings = await getPipelineSettings();
 
   if (!settings.enabled) {
-    return { skipped: true, message: "Pipeline is disabled in settings" };
+    const r: PipelineResult = { skipped: true, message: "Pipeline is disabled in settings" };
+    await recordPipelineRun(r);
+    return r;
   }
 
   if (!force) {
@@ -104,13 +107,17 @@ export async function runPipeline({ force = false }: { force?: boolean } = {}): 
       (settings.frequency === "weekdays" && day >= 1 && day <= 5);
 
     if (!shouldRun) {
-      return { skipped: true, message: `Frequency is "${settings.frequency}" — not scheduled to run today` };
+      const r: PipelineResult = { skipped: true, message: `Frequency is "${settings.frequency}" — not scheduled to run today` };
+      await recordPipelineRun(r);
+      return r;
     }
   }
 
   const activeIndustries = settings.industries.filter((i) => i.enabled);
   if (!activeIndustries.length) {
-    return { skipped: true, message: "No industries enabled" };
+    const r: PipelineResult = { skipped: true, message: "No industries enabled" };
+    await recordPipelineRun(r);
+    return r;
   }
 
   const industry = pickRandom(activeIndustries);
@@ -190,7 +197,9 @@ Rules:
     .slice(0, maxLeads);
 
   if (!newLeads.length) {
-    return { added: 0, message: "All discovered leads already in queue or unsubscribed" };
+    const r: PipelineResult = { added: 0, message: "All discovered leads already in queue or unsubscribed" };
+    await recordPipelineRun(r);
+    return r;
   }
 
   const drafted: LeadDraft[] = [];
@@ -242,7 +251,9 @@ Return ONLY a JSON object with this exact shape:
   }
 
   if (!drafted.length) {
-    return { added: 0, message: "Drafting failed for all leads" };
+    const r: PipelineResult = { added: 0, message: "Drafting failed for all leads" };
+    await recordPipelineRun(r);
+    return r;
   }
 
   const rows = drafted.map((d) => ({
@@ -262,5 +273,7 @@ Return ONLY a JSON object with this exact shape:
   const { error: insertError } = await sb.from("outreach_leads").insert(rows);
   if (insertError) throw new Error(insertError.message);
 
-  return { added: rows.length, industry: industry.label, location, companies: rows.map((r) => r.company_name) };
+  const result: PipelineResult = { added: rows.length, industry: industry.label, location, companies: rows.map((r) => r.company_name) };
+  await recordPipelineRun(result);
+  return result;
 }

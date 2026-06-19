@@ -24,7 +24,7 @@ const categoryLabel: Record<string, string> = {
   restaurant: "Restaurant",
 };
 
-export function LeadCard({ lead }: { lead: Lead }) {
+export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: boolean; onSelect?: () => void }) {
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
   const [subject, setSubject] = useState(lead.subject);
@@ -94,13 +94,27 @@ export function LeadCard({ lead }: { lead: Lead }) {
   }
 
   return (
-    <div className="rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 overflow-hidden">
+    <div className={`rounded-[10px] border bg-white dark:bg-zinc-900 overflow-hidden transition-colors ${
+      selected
+        ? "border-teal-300 dark:border-teal-700"
+        : "border-zinc-200 dark:border-zinc-800"
+    }`}>
       {/* Header */}
       <div
         className="flex items-start justify-between gap-4 px-5 py-4 cursor-pointer select-none"
         onClick={() => setExpanded((v) => !v)}
       >
-        <div className="min-w-0">
+        <div className="flex items-start gap-3 min-w-0">
+          {onSelect && (
+            <input
+              type="checkbox"
+              checked={!!selected}
+              onChange={(e) => { e.stopPropagation(); onSelect(); }}
+              onClick={(e) => e.stopPropagation()}
+              className="mt-1 w-3.5 h-3.5 rounded border-zinc-300 dark:border-zinc-600 accent-teal-700 dark:accent-teal-400 cursor-pointer shrink-0"
+            />
+          )}
+          <div className="min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span
               className="text-base font-medium text-zinc-900 dark:text-zinc-50"
@@ -108,7 +122,7 @@ export function LeadCard({ lead }: { lead: Lead }) {
             >
               {lead.company_name}
             </span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400" style={{ fontFamily: "var(--font-inter)" }}>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-400 border border-teal-100 dark:border-teal-900/60" style={{ fontFamily: "var(--font-inter)" }}>
               {categoryLabel[lead.category] ?? lead.category}
             </span>
           </div>
@@ -133,6 +147,7 @@ export function LeadCard({ lead }: { lead: Lead }) {
               </>
             ) : null}
           </p>
+          </div>
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <span className="text-xs text-zinc-400 dark:text-zinc-600" style={{ fontFamily: "var(--font-inter)" }}>{date}</span>

@@ -80,6 +80,15 @@ export async function discardLead(id: string) {
   revalidatePath("/admin");
 }
 
+export async function batchDiscardLeads(ids: string[]) {
+  if (!ids.length) return;
+  await getSupabase()
+    .from("outreach_leads")
+    .update({ status: "discarded" })
+    .in("id", ids);
+  revalidatePath("/admin");
+}
+
 export async function updateLeadEmail(id: string, email: string) {
   await getSupabase()
     .from("outreach_leads")
