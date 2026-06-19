@@ -114,7 +114,8 @@ export async function runPipeline({ force = false }: { force?: boolean } = {}): 
 You are a business development assistant helping find ${industry.label} in ${location} that might benefit from website and digital marketing improvements.
 
 Use web search to find ${maxLeads + 2} real, specific local businesses — not directories, not chains.
-For each business find: company name, website URL, owner or manager first name (if findable), email address (from their website contact page), phone number.
+
+For each business, search their website thoroughly: check the homepage, contact page, about page, and footer for an email address or mailto: link. Also check their Google Business profile listing. Owner or manager first name is ideal but not required.
 
 Return ONLY a JSON array like this (no other text):
 [
@@ -127,30 +128,51 @@ Return ONLY a JSON array like this (no other text):
   }
 ]
 
-If you cannot find an email, set recipient_email to null. If you cannot find a first name, use "there".
+If you genuinely cannot find an email after checking the website and Google listing, set recipient_email to null — do not guess or make one up.
+If you cannot find a first name, use "there".
 `.trim();
 
   const discoverText = await runClaude(client, discoverPrompt, true);
   const rawLeads: RawLead[] = extractJson<RawLead[]>(discoverText) ?? [];
 
-  const leadsWithEmail = rawLeads.filter((l) => l.recipient_email);
-  if (!leadsWithEmail.length) {
-    return { added: 0, message: "No leads with emails found" };
+  const validLeads = rawLeads.filter((l) => l.company_name);
+  if (!validLeads.length) {
+    return { added: 0, message: "No businesses found" };
   }
 
-  const emails = leadsWithEmail.map((l) => l.recipient_email!.toLowerCase());
-  const [{ data: existingLeads }, { data: unsubscribed }] = await Promise.all([
-    sb.from("outreach_leads").select("recipient_email").in("recipient_email", emails),
-    sb.from("outreach_unsubscribes").select("email").in("email", emails),
-  ]);
+  // Dedup by email (when present) and by website/company name
+  const emailsToCheck = validLeads.filter((l) => l.recipient_email).map((l) => l.recipient_email!.toLowerCase());
+  const urlsToCheck = validLeads.filter((l) => l.website_url).map((l) => l.website_url!.toLowerCase());
+  const namesToCheck = validLeads.map((l) => l.company_name.toLowerCase());
 
-  const seen = new Set([
-    ...(existingLeads ?? []).map((r) => r.recipient_email.toLowerCase()),
+  const [{ data: existingByEmail }, { data: existingByUrl }, { data: existingByName }, { data: unsubscribed }] =
+    await Promise.all([
+      emailsToCheck.length
+        ? sb.from("outreach_leads").select("recipient_email").in("recipient_email", emailsToCheck)
+        : Promise.resolve({ data: [] }),
+      urlsToCheck.length
+        ? sb.from("outreach_leads").select("website_url").in("website_url", urlsToCheck)
+        : Promise.resolve({ data: [] }),
+      sb.from("outreach_leads").select("company_name").in("company_name", namesToCheck),
+      emailsToCheck.length
+        ? sb.from("outreach_unsubscribes").select("email").in("email", emailsToCheck)
+        : Promise.resolve({ data: [] }),
+    ]);
+
+  const seenEmails = new Set([
+    ...(existingByEmail ?? []).map((r) => r.recipient_email?.toLowerCase()).filter(Boolean),
     ...(unsubscribed ?? []).map((r) => r.email.toLowerCase()),
   ]);
+  const seenUrls = new Set((existingByUrl ?? []).map((r) => r.website_url?.toLowerCase()).filter(Boolean));
+  const seenNames = new Set((existingByName ?? []).map((r) => r.company_name.toLowerCase()));
 
-  const newLeads = leadsWithEmail
-    .filter((l) => !seen.has(l.recipient_email!.toLowerCase()))
+  const newLeads = validLeads
+    .filter((l) => {
+      if (l.recipient_email && seenEmails.has(l.recipient_email.toLowerCase())) return false;
+      if (l.website_url && seenUrls.has(l.website_url.toLowerCase())) return false;
+      if (seenNames.has(l.company_name.toLowerCase())) return false;
+      return true;
+    })
     .slice(0, maxLeads);
 
   if (!newLeads.length) {
@@ -214,7 +236,7 @@ Return ONLY a JSON object with this exact shape:
     company_name: d.company_name,
     website_url: d.website_url,
     category: d.category,
-    recipient_email: d.recipient_email!,
+    recipient_email: d.recipient_email ?? null,
     phone: d.phone,
     subject: d.subject,
     body_paragraphs: d.body_paragraphs,

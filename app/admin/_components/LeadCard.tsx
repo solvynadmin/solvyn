@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { sendLeadEmail, discardLead, updateLeadDraft } from "../actions";
+import { sendLeadEmail, discardLead, updateLeadDraft, updateLeadEmail } from "../actions";
 
 type Lead = {
   id: string;
@@ -9,7 +9,7 @@ type Lead = {
   company_name: string;
   website_url: string | null;
   category: string;
-  recipient_email: string;
+  recipient_email: string | null;
   phone: string | null;
   subject: string;
   body_paragraphs: string[];
@@ -31,8 +31,17 @@ export function LeadCard({ lead }: { lead: Lead }) {
   const [findings, setFindings] = useState(lead.audit_findings.join("\n"));
   const [bodyParas, setBodyParas] = useState(lead.body_paragraphs.join("\n\n"));
   const [closing, setClosing] = useState(lead.closing_paragraph);
+  const [emailInput, setEmailInput] = useState("");
   const [result, setResult] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  function handleSaveEmail() {
+    if (!emailInput.trim()) return;
+    startTransition(async () => {
+      await updateLeadEmail(lead.id, emailInput.trim());
+      lead.recipient_email = emailInput.trim().toLowerCase();
+    });
+  }
 
   function handleSend() {
     startTransition(async () => {
@@ -104,7 +113,10 @@ export function LeadCard({ lead }: { lead: Lead }) {
             </span>
           </div>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-0.5" style={{ fontFamily: "var(--font-inter)" }}>
-            {lead.first_name} &middot; {lead.recipient_email}
+            {lead.first_name}
+            {lead.recipient_email ? ` · ${lead.recipient_email}` : (
+              <span className="ml-1.5 text-xs px-1.5 py-0.5 rounded bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400">no email</span>
+            )}
             {lead.phone ? ` · ${lead.phone}` : ""}
             {lead.website_url ? (
               <>
@@ -211,54 +223,79 @@ export function LeadCard({ lead }: { lead: Lead }) {
           )}
 
           {/* Actions */}
-          <div className="flex items-center gap-2 pt-1">
-            {editing ? (
-              <>
+          <div className="space-y-3 pt-1">
+            {!lead.recipient_email && (
+              <div className="flex items-center gap-2">
+                <input
+                  type="email"
+                  placeholder="Add email address to send"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleSaveEmail(); }}}
+                  className="flex-1 px-3 py-2 text-sm rounded-[7px] border border-amber-200 dark:border-amber-800 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 outline-none focus:ring-2 focus:ring-amber-400 dark:focus:ring-amber-500"
+                  style={{ fontFamily: "var(--font-inter)" }}
+                />
                 <button
-                  onClick={handleSaveEdit}
-                  disabled={isPending}
-                  className="px-4 py-2 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 text-sm font-medium hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors disabled:opacity-50"
+                  onClick={handleSaveEmail}
+                  disabled={isPending || !emailInput.trim()}
+                  className="px-3 py-2 rounded-[7px] border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-40"
                   style={{ fontFamily: "var(--font-inter)" }}
                 >
-                  {isPending ? "Saving..." : "Save"}
+                  Save
                 </button>
-                <button
-                  onClick={() => setEditing(false)}
-                  disabled={isPending}
-                  className="px-4 py-2 rounded-[7px] border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
-                  style={{ fontFamily: "var(--font-inter)" }}
-                >
-                  Cancel
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={handleSend}
-                  disabled={isPending}
-                  className="px-4 py-2 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 text-sm font-medium hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors disabled:opacity-50"
-                  style={{ fontFamily: "var(--font-inter)" }}
-                >
-                  {isPending ? "Sending..." : "Send"}
-                </button>
-                <button
-                  onClick={() => setEditing(true)}
-                  disabled={isPending}
-                  className="px-4 py-2 rounded-[7px] border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
-                  style={{ fontFamily: "var(--font-inter)" }}
-                >
-                  Edit
-                </button>
-                <button
-                  onClick={handleDiscard}
-                  disabled={isPending}
-                  className="px-4 py-2 rounded-[7px] text-sm text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors disabled:opacity-50"
-                  style={{ fontFamily: "var(--font-inter)" }}
-                >
-                  Discard
-                </button>
-              </>
+              </div>
             )}
+
+            <div className="flex items-center gap-2">
+              {editing ? (
+                <>
+                  <button
+                    onClick={handleSaveEdit}
+                    disabled={isPending}
+                    className="px-4 py-2 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 text-sm font-medium hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors disabled:opacity-50"
+                    style={{ fontFamily: "var(--font-inter)" }}
+                  >
+                    {isPending ? "Saving..." : "Save"}
+                  </button>
+                  <button
+                    onClick={() => setEditing(false)}
+                    disabled={isPending}
+                    className="px-4 py-2 rounded-[7px] border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                    style={{ fontFamily: "var(--font-inter)" }}
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={handleSend}
+                    disabled={isPending || !lead.recipient_email}
+                    title={!lead.recipient_email ? "Add an email address first" : undefined}
+                    className="px-4 py-2 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 text-sm font-medium hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    style={{ fontFamily: "var(--font-inter)" }}
+                  >
+                    {isPending ? "Sending..." : "Send"}
+                  </button>
+                  <button
+                    onClick={() => setEditing(true)}
+                    disabled={isPending}
+                    className="px-4 py-2 rounded-[7px] border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                    style={{ fontFamily: "var(--font-inter)" }}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={handleDiscard}
+                    disabled={isPending}
+                    className="px-4 py-2 rounded-[7px] text-sm text-zinc-400 dark:text-zinc-600 hover:text-zinc-600 dark:hover:text-zinc-400 transition-colors disabled:opacity-50"
+                    style={{ fontFamily: "var(--font-inter)" }}
+                  >
+                    Discard
+                  </button>
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

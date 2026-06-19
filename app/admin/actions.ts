@@ -80,6 +80,14 @@ export async function discardLead(id: string) {
   revalidatePath("/admin");
 }
 
+export async function updateLeadEmail(id: string, email: string) {
+  await getSupabase()
+    .from("outreach_leads")
+    .update({ recipient_email: email.trim().toLowerCase() })
+    .eq("id", id);
+  revalidatePath("/admin");
+}
+
 export async function updateLeadDraft(
   id: string,
   patch: {
