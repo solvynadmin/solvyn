@@ -268,8 +268,8 @@ REQUIRED OUTPUT STRUCTURE (return a JSON array, same order as input):
   {
     "subject": "Under 60 chars. Name the specific page or element noticed, phrased neutrally. Example: 'Your contact page on [Business]' or 'A note on [Business]s search setup.' No cost claims. No 'free.' No 'Quick question' or 'Following up.'",
     "audit_findings": [
-      "Bullet 1 — most immediately visible or impactful finding from the HTML. State what is there or not there, plainly. No 'costing you' framing. 15-25 words. Must be verifiable from the HTML provided.",
-      "Bullet 2 — a second distinct finding from a different audit area (SEO, accessibility, automation gap, or lead gen). Same plain observation style. 15-25 words. Must be verifiable from the HTML or its absence."
+      "Bullet 1 — Write from the perspective of a real customer or someone searching for this business. What do they actually see, not find, or not be able to do? Explain the experience, not the code. Bad: 'No schema.org LocalBusiness markup is present.' Good: 'When someone searches for this business on Google, the listing shows a plain link with no star rating, phone number, or hours — details that show up directly in results for competitors who have structured data set up.' 20-35 words. Must be grounded in the HTML.",
+      "Bullet 2 — A second finding from a different area (lead gen, automation gap, accessibility, or website flow). Same rule: describe what a visitor or customer experiences, not what tag is missing. If a booking form is absent, say what someone who wants to schedule cannot do. If images have no alt text, say what a visually impaired visitor encounters. 20-35 words. Must be distinct from bullet 1 and from the opening observation."
     ],
     "body_paragraphs": [
       "INTRO — Exactly 2 sentences. Sentence 1: 'I'm Cameron, I run Solvyn, a Phoenix-based technology and AI consulting firm.' Sentence 2: 'We work with [category label, e.g. local restaurants / HVAC contractors / dental offices] to take a closer look at how their business shows up online and where technology can do more of the work.'",
@@ -283,10 +283,10 @@ REQUIRED OUTPUT STRUCTURE (return a JSON array, same order as input):
 
 CALIBRATION EXAMPLE — Little Mesa Cafe (category: local restaurants, website: ourlittlemesacafe.com):
 subject: "Your contact page on Little Mesa Cafe"
-audit_findings[0]: "The contact form has no <label> elements on its fields and no visible confirmation state in the HTML."
-audit_findings[1]: "No schema.org LocalBusiness or Restaurant markup found, which limits how Google displays the business in local search results."
+audit_findings[0]: "Someone searching 'Little Mesa Cafe' on Google sees a plain link with no hours, phone, or star rating visible in the results — information competitors with structured data have showing up automatically."
+audit_findings[1]: "There's no online reservation or waitlist option on the site, so anyone who lands after hours or wants to plan ahead has no way to act on it — they move on to a restaurant that lets them book."
 body_paragraphs[0]: "I'm Cameron, I run Solvyn, a Phoenix-based technology and AI consulting firm. We work with local restaurants to take a closer look at how their business shows up online and where technology can do more of the work."
-body_paragraphs[1]: "Taking a look at your Contact page, I noticed the form fields have no labels attached in the HTML. Curious whether that's intentional or something that's been on your list."
+body_paragraphs[1]: "Taking a look at your Contact page, I noticed the form has no confirmation after submitting — so someone who fills it out has no way to know if their message went through. Curious whether that's intentional or something that's been on your list."
 body_paragraphs[2]: "We offer a free initial consultation, no cost and no commitment, where I'll walk through how Little Mesa Cafe shows up across Google search, your site's SEO and accessibility, whether visitors have a clear next step, and where automation or AI tools could take work off your plate."
 body_paragraphs[3]: "What feels like it's working well right now, and is there anything on the digital side you've been meaning to get to?"
 closing_paragraph: "Worth 15 minutes this week to talk through it? Reply and I'll send over a few times that work. No pressure if it's not a priority right now."
@@ -298,6 +298,8 @@ HARD RULES:
 - No bullet lists inside body_paragraphs.
 - body_paragraphs must be exactly 4 items in the order above.
 - audit_findings must be exactly 2 items. Do NOT repeat the observation already used in body_paragraphs[1].
+- The two audit_findings bullets must not both be about the same category. If bullet 1 is about search visibility or metadata, bullet 2 must be about lead gen, automation, website flow, or accessibility — not another metadata observation.
+- Do not write findings in developer or technical terms. A business owner should read each bullet and immediately understand what their customer or visitor experiences. Never mention HTML tags, schema markup names, Open Graph, or meta tags by name — describe the visible effect instead.
 - No cost-verdict language ("costing you," "losing you," "hurting your").
 - closing_paragraph must match the calibration example exactly.
 - Return ONLY the JSON array, no other text.
