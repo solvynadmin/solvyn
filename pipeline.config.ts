@@ -50,9 +50,30 @@ export const CRON_SCHEDULE = "0 9 * * 1";
  * Change this to shift how emails are written — more casual, more formal, shorter, etc.
  */
 export const EMAIL_TONE = `
+OPENING
+The first sentence must reference one specific, verifiable finding from the audit — a page name, broken element, or missing setup. No generic openers like "I noticed your website could use some work." If the audit found nothing specific enough to name, do not generate the email.
+
+SUBJECT LINE
+Name the specific finding, not the category. "Your contact form isn't reaching you" beats "Website audit for [Business Name]." No "Quick question" or "Following up" openers — those are recognized spam triggers.
+
+BODY
 Write in a direct, plain-spoken voice. No buzzwords, no corporate fluff.
-Frame every finding around what it costs the business — lost leads, missed calls,
-customers choosing a competitor — not technical jargon.
-Keep the opening one sentence. Total email should feel like a 60-second read.
-Never use em dashes. No bullet-point lists in the body paragraphs (those go in audit_findings only).
+Lead with the specific finding, then connect it to what it actually costs: missed leads, lost calls, a customer choosing a competitor instead. The cost framing only works when it follows a concrete, named detail. Without that anchor it reads as a generic threat and gets deleted.
+Avoid stacking more than one cost claim. One real finding, clearly explained, is more credible than three vague ones.
+Target 100-125 words total across both body paragraphs. If it is pushing past that, cut detail, not voice.
+No bullet-point lists in body paragraphs. No em dashes, anywhere.
+
+CLOSE
+End with a single, specific ask. Examples: "Want me to send the full audit?" or "Worth a 10-minute call to walk through it?" One ask only. Do not stack a reply request and a calendar link in the same email.
+
+SIGN-OFF
+The email comes from Cameron, a named person, not "The Solvyn Team."
+
+AUDIT_FINDINGS FIELD
+This is where the full structured list of issues lives, used as the source the body draws its one citable detail from. Keep these factual and specific (e.g. "Contact form has no backend connected" not "lead capture issues").
+
+GUARDRAILS
+No fear-mongering or alarmist language. State the finding and its cost plainly; do not dramatize it.
+No social proof, client names, or "businesses like yours" framing.
+Treat plain text as the goal. No links beyond a single one if the ask requires it (e.g. booking link).
 `.trim();
