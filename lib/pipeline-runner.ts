@@ -29,6 +29,33 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
+// Fetch real page HTML so Claude audits the actual site, not its assumptions
+async function fetchPageContent(url: string): Promise<string> {
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 6000);
+    const res = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "text/html",
+      },
+      signal: controller.signal,
+    });
+    clearTimeout(timer);
+    if (!res.ok) return "";
+    const html = await res.text();
+    // Strip scripts, styles, comments — keep meaningful structure
+    return html
+      .replace(/<script[\s\S]*?<\/script>/gi, "")
+      .replace(/<style[\s\S]*?<\/style>/gi, "")
+      .replace(/<!--[\s\S]*?-->/g, "")
+      .slice(0, 8000);
+  } catch {
+    return "";
+  }
+}
+
 function scrubEmDashes(text: string): string {
   // Split at em dash boundaries, capitalize each continuation, join with ". "
   const parts = text.split(/\s*—\s*/);
@@ -188,7 +215,7 @@ Return ONLY the JSON array.
 // Step 5 — Sonnet drafts ALL emails in one call
 async function draftAllEmails(
   client: Anthropic,
-  leads: Business[],
+  leads: (Business & { pageHtml: string })[],
   industryLabel: string,
   emailTone: string,
 ): Promise<LeadDraft[]> {
@@ -197,24 +224,58 @@ You are drafting cold outreach emails for Cameron Cons, founder of Solvyn, a Pho
 
 ${emailTone}
 
-For each business below, review their website and identify specific observations, then draft the email following the EXACT structure below.
+For each business below you are given the actual HTML of their homepage. Use it to identify real, verifiable observations — do not speculate about anything you cannot confirm from the HTML. If the HTML is empty or too sparse, note that and base findings on what is provably absent rather than guessing what is present.
 
 Businesses:
-${leads.map((l, i) => `[${i}] ${l.company_name} | website: ${l.website_url ?? "none"} | category: ${industryLabel}`).join("\n")}
+${leads.map((l, i) => `[${i}] ${l.company_name} | website: ${l.website_url ?? "none"} | category: ${industryLabel}
+HOMEPAGE HTML:
+${l.pageHtml || "No HTML retrieved — website may block crawlers or be unreachable. Only report on what is verifiably absent (e.g. no Google Business schema could be verified, no structured data found)."}`).join("\n\n---\n\n")}
+
+AUDIT SCOPE — examine the actual HTML for each business across these areas:
+
+GOOGLE DISCOVERABILITY
+- Title tag: is it present and descriptive, or just the brand name / domain?
+- Meta description: present and meaningful?
+- LocalBusiness or other schema.org structured data in the HTML?
+- Open Graph tags for social sharing?
+
+SEO
+- Is there an <h1>? Is the heading hierarchy logical (h1 → h2 → h3)?
+- Do <img> tags have descriptive alt attributes, or are they empty/missing?
+- Viewport meta tag present (mobile-ready signal)?
+- Canonical tag present?
+
+WEBSITE FLOW & LEAD GENERATION
+- Is a phone number, email, or contact form visible in the <nav> or above-the-fold content — check the actual HTML before reporting it as missing.
+- Is there a clear call-to-action button or link in the hero/header area?
+- Is there a booking, scheduling, or inquiry form anywhere on the page?
+- Is there a live chat widget or chatbot integration?
+
+WCAG / ACCESSIBILITY
+- Do images have alt text?
+- Do form inputs have associated <label> elements?
+- Is the <html> tag missing a lang attribute?
+
+AUTOMATION & AI OPPORTUNITIES (based on business type and what is absent)
+- Online scheduling or appointment booking integration (Calendly, Acuity, etc.)
+- Lead capture chatbot or AI assistant
+- Automated follow-up or email capture
+- Industry-specific gaps: restaurants (online ordering, reservations), HVAC/plumbing (service scheduling, maintenance reminders), dental (patient intake, appointment reminders), auto repair (service history, online booking), landscaping (quote requests, recurring schedule)
+- Any indication they are manually handling processes that could be automated
 
 REQUIRED OUTPUT STRUCTURE (return a JSON array, same order as input):
 [
   {
-    "subject": "Under 60 chars. Name the specific page or element noticed, phrased neutrally. 'Your contact page on [Business]' or 'A note on your site's search visibility.' No cost claims. No 'free.' No 'Quick question' or 'Following up.'",
+    "subject": "Under 60 chars. Name the specific page or element noticed, phrased neutrally. Example: 'Your contact page on [Business]' or 'A note on [Business]s search setup.' No cost claims. No 'free.' No 'Quick question' or 'Following up.'",
     "audit_findings": [
-      "Bullet 1 — most immediately visible to a visitor (visual/immediate). State what is there or not there, plainly. No 'costing you' or 'losing you' framing. 15-25 words.",
-      "Bullet 2 — further down the funnel (functional issue or search/discovery). Same plain observation style. 15-25 words."
+      "Bullet 1 — most immediately visible or impactful finding from the HTML. State what is there or not there, plainly. No 'costing you' framing. 15-25 words. Must be verifiable from the HTML provided.",
+      "Bullet 2 — a second distinct finding from a different audit area (SEO, accessibility, automation gap, or lead gen). Same plain observation style. 15-25 words. Must be verifiable from the HTML or its absence."
     ],
     "body_paragraphs": [
-      "INTRO — Exactly 2 sentences. Sentence 1: 'I'm Cameron, I run Solvyn, a Phoenix-based technology and AI consulting firm.' Sentence 2: 'We work with [category label, e.g. local restaurants / HVAC contractors / dental offices] to take a closer look at how their business shows up online.'",
-      "OBSERVATION — 2 sentences. Sentence 1: 'Taking a look at [specific page or element on their site], I noticed [concrete finding].' Sentence 2: 'Curious whether that's intentional or something that's been on your list.' Must name a real, specific page or element. Frame as curiosity, not a verdict.",
-      "CONSULTATION OFFER — Adapt slightly per lead if needed but keep the core language: 'We offer a free initial consultation, no cost and no commitment, where I'll walk through how your business shows up across Google search, your site's SEO, the pages themselves, and whether visitors have a clear next step once they land.'",
-      "GENUINE QUESTION — One open question inviting their perspective: 'What feels like it's working right now, and is there anything you've been meaning to look at?' Must read as a real question, not a rhetorical setup."
+      "INTRO — Exactly 2 sentences. Sentence 1: 'I'm Cameron, I run Solvyn, a Phoenix-based technology and AI consulting firm.' Sentence 2: 'We work with [category label, e.g. local restaurants / HVAC contractors / dental offices] to take a closer look at how their business shows up online and where technology can do more of the work.'",
+      "OBSERVATION — 2 sentences. Sentence 1: 'Taking a look at [specific page or element confirmed in the HTML], I noticed [concrete finding from the HTML].' Sentence 2: 'Curious whether that's intentional or something that's been on your list.' Must reference something real and specific from the HTML. No guessing.",
+      "CONSULTATION OFFER — Keep core language but adapt the scope list to what the audit actually surfaced: 'We offer a free initial consultation, no cost and no commitment, where I'll walk through how [company name] shows up across Google search, your site's SEO and accessibility, whether visitors have a clear next step, and where automation or AI tools could take work off your plate.'",
+      "GENUINE QUESTION — One open question inviting their perspective: 'What feels like it's working well right now, and is there anything on the digital side you've been meaning to get to?' Must read as a real question, not a rhetorical setup."
     ],
     "closing_paragraph": "Worth 15 minutes this week to talk through it? Reply and I'll send over a few times that work. No pressure if it's not a priority right now."
   }
@@ -222,21 +283,23 @@ REQUIRED OUTPUT STRUCTURE (return a JSON array, same order as input):
 
 CALIBRATION EXAMPLE — Little Mesa Cafe (category: local restaurants, website: ourlittlemesacafe.com):
 subject: "Your contact page on Little Mesa Cafe"
-audit_findings[0]: "The contact form shows no confirmation message after submitting, so it's unclear if the message was received."
-audit_findings[1]: "No Google Business schema on the homepage reduces how often the restaurant appears in local 'cafe near me' search results."
-body_paragraphs[0]: "I'm Cameron, I run Solvyn, a Phoenix-based technology and AI consulting firm. We work with local restaurants to take a closer look at how their business shows up online."
-body_paragraphs[1]: "Taking a look at your Contact page, I noticed the form has no visible confirmation after submitting. Curious whether that's intentional or something that's been on your list."
-body_paragraphs[2]: "We offer a free initial consultation, no cost and no commitment, where I'll walk through how your business shows up across Google search, your site's SEO, the pages themselves, and whether visitors have a clear next step once they land."
-body_paragraphs[3]: "What feels like it's working right now, and is there anything you've been meaning to look at?"
+audit_findings[0]: "The contact form has no <label> elements on its fields and no visible confirmation state in the HTML."
+audit_findings[1]: "No schema.org LocalBusiness or Restaurant markup found, which limits how Google displays the business in local search results."
+body_paragraphs[0]: "I'm Cameron, I run Solvyn, a Phoenix-based technology and AI consulting firm. We work with local restaurants to take a closer look at how their business shows up online and where technology can do more of the work."
+body_paragraphs[1]: "Taking a look at your Contact page, I noticed the form fields have no labels attached in the HTML. Curious whether that's intentional or something that's been on your list."
+body_paragraphs[2]: "We offer a free initial consultation, no cost and no commitment, where I'll walk through how Little Mesa Cafe shows up across Google search, your site's SEO and accessibility, whether visitors have a clear next step, and where automation or AI tools could take work off your plate."
+body_paragraphs[3]: "What feels like it's working well right now, and is there anything on the digital side you've been meaning to get to?"
 closing_paragraph: "Worth 15 minutes this week to talk through it? Reply and I'll send over a few times that work. No pressure if it's not a priority right now."
 
 HARD RULES:
-- No em dashes anywhere in any field. Use a period or rephrase.
+- Only report findings you can verify from the HTML provided. If a phone number appears in the <nav> HTML, do not say it is missing.
+- If images are present in the HTML (img src attributes exist), do not claim images are not loading — you cannot verify rendering.
+- No em dashes anywhere. Use a period or rephrase.
 - No bullet lists inside body_paragraphs.
 - body_paragraphs must be exactly 4 items in the order above.
-- audit_findings must be exactly 2 items. Do NOT repeat the observation from body_paragraphs[1].
-- No cost-verdict language anywhere ("costing you," "losing you," "hurting your").
-- closing_paragraph must match the calibration example exactly — do not vary it.
+- audit_findings must be exactly 2 items. Do NOT repeat the observation already used in body_paragraphs[1].
+- No cost-verdict language ("costing you," "losing you," "hurting your").
+- closing_paragraph must match the calibration example exactly.
 - Return ONLY the JSON array, no other text.
 `.trim();
 
@@ -368,8 +431,16 @@ export async function runPipeline({ force = false }: { force?: boolean } = {}): 
     return r;
   }
 
-  // ── Step 5: Sonnet drafts all emails in one call ──────────────────────────
-  const drafts = await draftAllEmails(client, finalLeads, industry.label, settings.email_tone);
+  // ── Step 5: Fetch real page HTML (parallel, no Claude) ───────────────────
+  const leadsWithHtml = await Promise.all(
+    finalLeads.map(async (lead) => ({
+      ...lead,
+      pageHtml: lead.website_url ? await fetchPageContent(lead.website_url) : "",
+    }))
+  );
+
+  // ── Step 6: Sonnet drafts all emails in one call ──────────────────────────
+  const drafts = await draftAllEmails(client, leadsWithHtml, industry.label, settings.email_tone);
 
   if (!drafts.length) {
     const r: PipelineResult = { added: 0, message: "Email drafting failed" };
