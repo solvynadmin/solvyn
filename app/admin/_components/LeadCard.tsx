@@ -297,6 +297,15 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
                   >
                     {isPending ? "Sending..." : "Send"}
                   </button>
+                  <a
+                    href={`/admin/preview/${lead.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-4 py-2 rounded-[7px] border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+                    style={{ fontFamily: "var(--font-inter)" }}
+                  >
+                    Preview
+                  </a>
                   <button
                     onClick={() => setEditing(true)}
                     disabled={isPending}
