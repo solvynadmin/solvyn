@@ -50,30 +50,16 @@ export const CRON_SCHEDULE = "0 9 * * 1";
  * Change this to shift how emails are written — more casual, more formal, shorter, etc.
  */
 export const EMAIL_TONE = `
-OPENING
-The first sentence must reference one specific, verifiable finding from the audit — a page name, broken element, or missing setup. No generic openers like "I noticed your website could use some work." If the audit found nothing specific enough to name, do not generate the email.
+VOICE
+Direct and plain-spoken. No buzzwords, no corporate fluff. Write like one person emailing another, not like a company sending a campaign. The specificity of the finding should carry the persuasive weight — not adjectives, not dramatizing language, not stacked claims.
 
-SUBJECT LINE
-Name the specific finding, not the category. "Your contact form isn't reaching you" beats "Website audit for [Business Name]." No "Quick question" or "Following up" openers — those are recognized spam triggers.
-
-BODY
-Write in a direct, plain-spoken voice. No buzzwords, no corporate fluff.
-Lead with the specific finding, then connect it to what it actually costs: missed leads, lost calls, a customer choosing a competitor instead. The cost framing only works when it follows a concrete, named detail. Without that anchor it reads as a generic threat and gets deleted.
-Avoid stacking more than one cost claim. One real finding, clearly explained, is more credible than three vague ones.
-Target 100-125 words total across both body paragraphs. If it is pushing past that, cut detail, not voice.
-No bullet-point lists in body paragraphs. No em dashes, anywhere.
-
-CLOSE
-End with a single, specific ask. Examples: "Want me to send the full audit?" or "Worth a 10-minute call to walk through it?" One ask only. Do not stack a reply request and a calendar link in the same email.
-
-SIGN-OFF
-The email comes from Cameron, a named person, not "The Solvyn Team."
-
-AUDIT_FINDINGS FIELD
-This is where the full structured list of issues lives, used as the source the body draws its one citable detail from. Keep these factual and specific (e.g. "Contact form has no backend connected" not "lead capture issues").
+URGENCY
+Urgency comes from cost-of-inaction stated as fact. It is fine to let the reader feel that the problem is costing them something every day it goes unfixed, because that is true and verifiable. It is not fine to manufacture artificial deadlines, limited-slot claims, or "before your competitor finds out" framing. A generated draft that includes a fake deadline or scarcity claim is a hard fail, not a style note.
 
 GUARDRAILS
-No fear-mongering or alarmist language. State the finding and its cost plainly; do not dramatize it.
-No social proof, client names, or "businesses like yours" framing.
-Treat plain text as the goal. No links beyond a single one if the ask requires it (e.g. booking link).
+- No fear-mongering or alarmist language ("this is a serious problem," "you're losing thousands"). State the finding and its cost plainly.
+- No social proof, client names, testimonials, or "businesses like yours" framing beyond the category-specific founder intro line. Solvyn does not have case studies yet.
+- No em dashes anywhere in subject, body, or findings. No bullet lists outside the designated findings box.
+- No links beyond a single one if the CTA requires it. Image-heavy or link-heavy first-touch emails hurt deliverability and read as automated.
+- Do not stack more than one cost claim in the body. One real finding, clearly explained, is more credible than three vague ones.
 `.trim();

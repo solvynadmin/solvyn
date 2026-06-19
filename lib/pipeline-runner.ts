@@ -200,36 +200,41 @@ ${emailTone}
 For each business below, identify 3 specific website or digital issues costing them leads, then draft the email following the EXACT structure below.
 
 Businesses:
-${leads.map((l, i) => `[${i}] ${l.company_name} | website: ${l.website_url ?? "none"}`).join("\n")}
+${leads.map((l, i) => `[${i}] ${l.company_name} | website: ${l.website_url ?? "none"} | category: ${industryLabel}`).join("\n")}
 
 REQUIRED OUTPUT STRUCTURE (return a JSON array, same order as input):
 [
   {
-    "subject": "Under 60 chars. Specific to their situation. Not generic.",
+    "subject": "Under 60 chars. Name the specific finding from body_paragraphs[0], not the category. 'Your contact form isn't reaching you' not 'Website audit for [Business].' No 'Quick question' or 'Following up.'",
     "audit_findings": [
-      "One sentence: specific problem + its direct business consequence. No em dashes.",
-      "One sentence: specific problem + its direct business consequence. No em dashes.",
-      "One sentence: specific problem + its direct business consequence. No em dashes."
+      "Bullet 1 — VISUAL: the most immediately obvious issue a visitor would notice on arrival. Pattern: [finding], [plain consequence]. 15-25 words. No jargon without a plain-language translation.",
+      "Bullet 2 — FUNCTIONAL: an issue that loses people partway through an action (form, booking, call). Same pattern. 15-25 words.",
+      "Bullet 3 — DISCOVERY: a search visibility or competitive issue that quietly loses business. Same pattern. 15-25 words."
     ],
     "body_paragraphs": [
-      "ONE sentence only. Pick the single most concrete finding from audit_findings and state what it costs them. No em dashes. Do NOT start with 'Hi' — the greeting is added separately.",
-      "1-2 sentences only. Start with: I'm Cameron, I run Solvyn, a Phoenix-based consulting firm. Follow with one sentence connecting Solvyn directly to fixing this specific issue. No generic pitch."
+      "ONE sentence only. Pattern: [concrete finding from audit_findings[0]], so [plain visible effect on a real visitor or customer]. The finding and consequence must be in the same sentence joined with 'so' or a comma. Do NOT start with 'Hi' — greeting is added separately. No em dashes.",
+      "Exactly 2 sentences. Sentence 1: 'I'm Cameron, I run Solvyn, a Phoenix-based consulting firm.' Sentence 2: 'I fix exactly this kind of thing for [use the lead's category label, e.g. local restaurants / HVAC contractors / dental offices], no retainer required.'"
     ],
-    "closing_paragraph": "One specific CTA under 15 words. Example: Want me to send the full audit? Not: let me know if you are interested."
+    "closing_paragraph": "One specific ask under 15 words. Default: 'Want me to send the full audit?' Do not stack a reply request and a calendar link."
   }
 ]
 
-CALIBRATION EXAMPLE — Little Mesa Cafe (restaurant, ourlittlemesacafe.com):
+CALIBRATION EXAMPLE — Little Mesa Cafe (category: local restaurants, website: ourlittlemesacafe.com):
+subject: "Your contact form isn't reaching you"
+audit_findings[0]: "Your contact form has no backend connected, so reservation and catering requests disappear before they reach you."
+audit_findings[1]: "No online ordering or booking link means customers who want to act immediately have no way to do it from your site."
+audit_findings[2]: "No Google Business schema on the homepage means you're less likely to appear in 'cafe near me' searches than competitors who have it."
 body_paragraphs[0]: "Your contact page form has no confirmation message and no visible backend connection, so when someone submits a reservation request or catering question, it likely never reaches you."
-body_paragraphs[1]: "I'm Cameron, I run Solvyn, a Phoenix-based consulting firm. I do targeted audits like this for local restaurants and fix what I find, no retainer required."
+body_paragraphs[1]: "I'm Cameron, I run Solvyn, a Phoenix-based consulting firm. I fix exactly this kind of thing for local restaurants, no retainer required."
 closing_paragraph: "Want me to send the full audit?"
 
 HARD RULES:
-- No em dashes anywhere. Use a period or rephrase.
+- No em dashes anywhere in any field. Use a period or rephrase.
 - No bullet lists inside body_paragraphs.
 - body_paragraphs must be exactly 2 items.
-- Total word count across both body_paragraphs: 40-80 words.
-- Do not repeat the same finding across all three items in audit_findings.
+- Total word count across both body_paragraphs: 100-125 words.
+- audit_findings must follow the visual → functional → discovery order.
+- Do not repeat the same finding across all three audit_findings items.
 - Return ONLY the JSON array, no other text.
 `.trim();
 
