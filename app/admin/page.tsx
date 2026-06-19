@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getSupabase } from "@/lib/supabase";
 import { logoutAction } from "./login/actions";
 import { LeadCard } from "./_components/LeadCard";
+import { RunPipelineButton } from "./_components/RunPipelineButton";
 
 export const metadata: Metadata = { title: "Lead Queue" };
 export const dynamic = "force-dynamic";
@@ -76,6 +77,9 @@ export default async function AdminPage() {
             <p className="text-2xl font-medium text-zinc-900 dark:text-zinc-50" style={{ fontFamily: "var(--font-space-grotesk)" }}>{discardedCount}</p>
           </div>
         </div>
+
+        {/* Run pipeline */}
+        <RunPipelineButton />
 
         {/* Pending queue */}
         <section>

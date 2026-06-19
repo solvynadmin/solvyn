@@ -2,6 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 import { render } from "@react-email/components";
+import { runPipeline, type PipelineResult } from "@/lib/pipeline-runner";
+
+export async function triggerPipelineAction(): Promise<PipelineResult> {
+  const result = await runPipeline({ force: true });
+  revalidatePath("/admin");
+  return result;
+}
 import { getSupabase } from "@/lib/supabase";
 import { getResend } from "@/lib/resend";
 import { buildUnsubscribeUrl } from "@/lib/unsubscribe";
