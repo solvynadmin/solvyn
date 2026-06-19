@@ -27,18 +27,26 @@ function pickRandom<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)];
 }
 
-async function runClaude(client: Anthropic, prompt: string, useWebSearch = false): Promise<string> {
+async function runClaude(client: Anthropic, prompt: string, useWebSearch = false, forceSearch = false): Promise<string> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const tools: any[] = useWebSearch ? [{ type: "web_search_20250305", name: "web_search" }] : [];
   const messages: Anthropic.MessageParam[] = [{ role: "user", content: prompt }];
+  let firstCall = true;
 
-  for (let round = 0; round < 8; round++) {
-    const response = await client.messages.create({
+  for (let round = 0; round < 10; round++) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const createParams: any = {
       model: "claude-sonnet-4-6",
       max_tokens: 4096,
       tools: tools.length ? tools : undefined,
       messages,
-    });
+    };
+    // Force the first call to use web search so Claude doesn't answer from training data
+    if (forceSearch && firstCall && tools.length) {
+      createParams.tool_choice = { type: "any" };
+    }
+    firstCall = false;
+    const response = await client.messages.create(createParams);
 
     if (response.stop_reason === "end_turn") {
       const textBlock = response.content.find((b) => b.type === "text");
@@ -111,13 +119,16 @@ export async function runPipeline({ force = false }: { force?: boolean } = {}): 
   const emailTone = settings.email_tone;
 
   const discoverPrompt = `
-You are a business development assistant helping find ${industry.label} in ${location} that might benefit from website and digital marketing improvements.
+Use web search right now to find ${maxLeads + 2} small, independently-owned ${industry.label} in ${location}.
 
-Use web search to find ${maxLeads + 2} real, specific local businesses — not directories, not chains.
+Search for something like: "${industry.label} ${location} site:yelp.com OR site:google.com/maps" or browse local directories to find businesses you would not know from training data — small operators, not well-known chains or franchises.
 
-For each business, search their website thoroughly: check the homepage, contact page, about page, and footer for an email address or mailto: link. Also check their Google Business profile listing. Owner or manager first name is ideal but not required.
+For each business found via search:
+1. Visit their website (if they have one) and check the homepage, contact page, about page, and footer for an email address.
+2. Check their Google Business profile for a contact email.
+3. Note the owner or manager's first name if visible anywhere.
 
-Return ONLY a JSON array like this (no other text):
+Return ONLY a JSON array — no explanation, no markdown outside the array:
 [
   {
     "company_name": "Example Plumbing Co",
@@ -128,11 +139,14 @@ Return ONLY a JSON array like this (no other text):
   }
 ]
 
-If you genuinely cannot find an email after checking the website and Google listing, set recipient_email to null — do not guess or make one up.
-If you cannot find a first name, use "there".
+Rules:
+- Only include real businesses you found via search — do not use training data.
+- If no email found after checking website + Google listing: set recipient_email to null. Never guess.
+- If no first name found: use "there".
+- No national chains, franchises, or businesses with 10+ locations.
 `.trim();
 
-  const discoverText = await runClaude(client, discoverPrompt, true);
+  const discoverText = await runClaude(client, discoverPrompt, true, true);
   const rawLeads: RawLead[] = extractJson<RawLead[]>(discoverText) ?? [];
 
   const validLeads = rawLeads.filter((l) => l.company_name);

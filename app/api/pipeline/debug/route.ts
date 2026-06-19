@@ -65,7 +65,7 @@ export async function GET(req: NextRequest) {
     const tools: any[] = [{ type: "web_search_20250305", name: "web_search" }];
     const messages: Anthropic.MessageParam[] = [{
       role: "user",
-      content: 'Search for one HVAC company in Phoenix AZ and return their name and website as JSON: {"name":"...","website":"..."}',
+      content: 'Use web search to find one small independent HVAC company in Phoenix AZ (not a chain). Return their name and website as JSON: {"name":"...","website":"..."}',
     }];
 
     let finalText = "";
@@ -73,12 +73,15 @@ export async function GET(req: NextRequest) {
 
     for (let i = 0; i < 6; i++) {
       rounds++;
-      const res = await client.messages.create({
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const params: any = {
         model: "claude-sonnet-4-6",
         max_tokens: 512,
         tools,
         messages,
-      });
+        ...(i === 0 ? { tool_choice: { type: "any" } } : {}),
+      };
+      const res = await client.messages.create(params);
 
       if (res.stop_reason === "end_turn") {
         const tb = res.content.find((b) => b.type === "text");
