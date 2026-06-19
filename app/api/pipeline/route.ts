@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import { getSupabase } from "@/lib/supabase";
-import { INDUSTRIES, LOCATIONS, MAX_LEADS_PER_RUN, EMAIL_TONE } from "@/pipeline.config";
+import { getPipelineSettings } from "@/lib/pipeline-settings";
 
 export const maxDuration = 300;
 
@@ -104,14 +104,27 @@ export async function GET(req: NextRequest) {
   const client = new Anthropic({ apiKey });
   const sb = getSupabase();
 
-  const industry = pickRandom(INDUSTRIES);
-  const location = pickRandom(LOCATIONS);
+  const settings = await getPipelineSettings();
+
+  if (!settings.enabled) {
+    return NextResponse.json({ skipped: true, message: "Pipeline is disabled in settings" });
+  }
+
+  const activeIndustries = settings.industries.filter((i) => i.enabled);
+  if (!activeIndustries.length) {
+    return NextResponse.json({ skipped: true, message: "No industries enabled" });
+  }
+
+  const industry = pickRandom(activeIndustries);
+  const location = pickRandom(settings.locations);
+  const maxLeads = settings.max_leads_per_run;
+  const emailTone = settings.email_tone;
 
   // Step 1: find leads via web search
   const discoverPrompt = `
 You are a business development assistant helping find ${industry.label} in ${location} that might benefit from website and digital marketing improvements.
 
-Use web search to find ${MAX_LEADS_PER_RUN + 2} real, specific local businesses — not directories, not chains.
+Use web search to find ${maxLeads + 2} real, specific local businesses — not directories, not chains.
 For each business find: company name, website URL, owner or manager first name (if findable), email address (from their website contact page), phone number.
 
 Return ONLY a JSON array like this (no other text):
@@ -154,7 +167,7 @@ If you cannot find an email, set recipient_email to null. If you cannot find a f
     ...(unsubscribed ?? []).map((r) => r.email.toLowerCase()),
   ]);
 
-  const newLeads = leadsWithEmail.filter((l) => !seen.has(l.recipient_email!.toLowerCase())).slice(0, MAX_LEADS_PER_RUN);
+  const newLeads = leadsWithEmail.filter((l) => !seen.has(l.recipient_email!.toLowerCase())).slice(0, maxLeads);
 
   if (!newLeads.length) {
     return NextResponse.json({ added: 0, message: "All discovered leads already in queue or unsubscribed" });
@@ -174,7 +187,7 @@ Industry: ${industry.label}
 
 ${lead.website_url ? `Use web search to visit their website and identify 3-4 specific issues that are costing them leads or customers. Focus on things a small business owner would immediately recognize as a problem: slow load time, no way to book online, missing reviews section, no clear phone number visible, outdated design, no response to Google reviews, etc.` : `Without a website URL, identify 3 common gaps for ${industry.label} in Phoenix that likely apply to this business.`}
 
-${EMAIL_TONE}
+${emailTone}
 
 Return ONLY a JSON object with this exact shape:
 {
