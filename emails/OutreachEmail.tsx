@@ -51,7 +51,7 @@ export default function OutreachEmail({
       </Head>
 
       <Preview>
-        A few things I noticed about {companyName} that are likely costing you leads.
+        A few things I noticed about {companyName} — worth a quick look.
       </Preview>
 
       <Body style={body}>
@@ -83,7 +83,7 @@ export default function OutreachEmail({
 
             {/* Audit findings callout */}
             <div style={callout}>
-              <Text style={calloutLabel}>What&apos;s likely costing you leads</Text>
+              <Text style={calloutLabel}>A few things I noticed</Text>
               {auditFindings.map((finding, i) => (
                 <div key={i} style={findingRow}>
                   <div style={findingDot} />

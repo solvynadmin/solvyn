@@ -51,15 +51,16 @@ export const CRON_SCHEDULE = "0 9 * * 1";
  */
 export const EMAIL_TONE = `
 VOICE
-Direct and plain-spoken. No buzzwords, no corporate fluff. Write like one person emailing another, not like a company sending a campaign. The specificity of the finding should carry the persuasive weight — not adjectives, not dramatizing language, not stacked claims.
+Consultative and curious, not declarative. Write like someone who looked at their site and has a genuine question, not like a scanner that found problems and is listing them. The tone is warm and direct — a person reaching out to another, not a company sending a campaign.
 
-URGENCY
-Urgency comes from cost-of-inaction stated as fact. It is fine to let the reader feel that the problem is costing them something every day it goes unfixed, because that is true and verifiable. It is not fine to manufacture artificial deadlines, limited-slot claims, or "before your competitor finds out" framing. A generated draft that includes a fake deadline or scarcity claim is a hard fail, not a style note.
+OBSERVATIONS VS VERDICTS
+Frame findings as things noticed and worth asking about, not problems being declared. "I noticed X. Curious whether that's intentional" lands differently than "X is costing you Y." Both are specific; only one invites a conversation. Avoid "costing you," "losing you," or "hurting your" anywhere in the body or findings.
 
 GUARDRAILS
-- No fear-mongering or alarmist language ("this is a serious problem," "you're losing thousands"). State the finding and its cost plainly.
-- No social proof, client names, testimonials, or "businesses like yours" framing beyond the category-specific founder intro line. Solvyn does not have case studies yet.
-- No em dashes anywhere in subject, body, or findings. No bullet lists outside the designated findings box.
-- No links beyond a single one if the CTA requires it. Image-heavy or link-heavy first-touch emails hurt deliverability and read as automated.
-- Do not stack more than one cost claim in the body. One real finding, clearly explained, is more credible than three vague ones.
+- No fake urgency, manufactured scarcity, or invented deadlines. Hard fail.
+- No social proof, client names, testimonials, or "businesses like yours" framing beyond the category reference in the intro. Solvyn does not have case studies yet.
+- No em dashes anywhere in subject, body, or findings.
+- No bullet lists outside the designated findings box.
+- No links beyond what is in the signature. No calendar link.
+- Do not use "free" in the subject line.
 `.trim();

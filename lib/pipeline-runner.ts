@@ -197,7 +197,7 @@ You are drafting cold outreach emails for Cameron Cons, founder of Solvyn, a Pho
 
 ${emailTone}
 
-For each business below, identify 3 specific website or digital issues costing them leads, then draft the email following the EXACT structure below.
+For each business below, review their website and identify specific observations, then draft the email following the EXACT structure below.
 
 Businesses:
 ${leads.map((l, i) => `[${i}] ${l.company_name} | website: ${l.website_url ?? "none"} | category: ${industryLabel}`).join("\n")}
@@ -205,36 +205,38 @@ ${leads.map((l, i) => `[${i}] ${l.company_name} | website: ${l.website_url ?? "n
 REQUIRED OUTPUT STRUCTURE (return a JSON array, same order as input):
 [
   {
-    "subject": "Under 60 chars. Name the specific finding from body_paragraphs[0], not the category. 'Your contact form isn't reaching you' not 'Website audit for [Business].' No 'Quick question' or 'Following up.'",
+    "subject": "Under 60 chars. Name the specific page or element noticed, phrased neutrally. 'Your contact page on [Business]' or 'A note on your site's search visibility.' No cost claims. No 'free.' No 'Quick question' or 'Following up.'",
     "audit_findings": [
-      "Bullet 1 — VISUAL: the most immediately obvious issue a visitor would notice on arrival. Pattern: [finding], [plain consequence]. 15-25 words. No jargon without a plain-language translation.",
-      "Bullet 2 — FUNCTIONAL: an issue that loses people partway through an action (form, booking, call). Same pattern. 15-25 words.",
-      "Bullet 3 — DISCOVERY: a search visibility or competitive issue that quietly loses business. Same pattern. 15-25 words."
+      "Bullet 1 — most immediately visible to a visitor (visual/immediate). State what is there or not there, plainly. No 'costing you' or 'losing you' framing. 15-25 words.",
+      "Bullet 2 — further down the funnel (functional issue or search/discovery). Same plain observation style. 15-25 words."
     ],
     "body_paragraphs": [
-      "ONE sentence only. Pattern: [concrete finding from audit_findings[0]], so [plain visible effect on a real visitor or customer]. The finding and consequence must be in the same sentence joined with 'so' or a comma. Do NOT start with 'Hi' — greeting is added separately. No em dashes.",
-      "Exactly 2 sentences. Sentence 1: 'I'm Cameron, I run Solvyn, a Phoenix-based consulting firm.' Sentence 2: 'I fix exactly this kind of thing for [use the lead's category label, e.g. local restaurants / HVAC contractors / dental offices], no retainer required.'"
+      "INTRO — Exactly 2 sentences. Sentence 1: 'I'm Cameron, I run Solvyn, a Phoenix-based technology and AI consulting firm.' Sentence 2: 'We work with [category label, e.g. local restaurants / HVAC contractors / dental offices] to take a closer look at how their business shows up online.'",
+      "OBSERVATION — 2 sentences. Sentence 1: 'Taking a look at [specific page or element on their site], I noticed [concrete finding].' Sentence 2: 'Curious whether that's intentional or something that's been on your list.' Must name a real, specific page or element. Frame as curiosity, not a verdict.",
+      "CONSULTATION OFFER — Adapt slightly per lead if needed but keep the core language: 'We offer a free initial consultation, no cost and no commitment, where I'll walk through how your business shows up across Google search, your site's SEO, the pages themselves, and whether visitors have a clear next step once they land.'",
+      "GENUINE QUESTION — One open question inviting their perspective: 'What feels like it's working right now, and is there anything you've been meaning to look at?' Must read as a real question, not a rhetorical setup."
     ],
-    "closing_paragraph": "One specific ask under 15 words. Default: 'Want me to send the full audit?' Do not stack a reply request and a calendar link."
+    "closing_paragraph": "Worth 15 minutes this week to talk through it? Reply and I'll send over a few times that work. No pressure if it's not a priority right now."
   }
 ]
 
 CALIBRATION EXAMPLE — Little Mesa Cafe (category: local restaurants, website: ourlittlemesacafe.com):
-subject: "Your contact form isn't reaching you"
-audit_findings[0]: "Your contact form has no backend connected, so reservation and catering requests disappear before they reach you."
-audit_findings[1]: "No online ordering or booking link means customers who want to act immediately have no way to do it from your site."
-audit_findings[2]: "No Google Business schema on the homepage means you're less likely to appear in 'cafe near me' searches than competitors who have it."
-body_paragraphs[0]: "Your contact page form has no confirmation message and no visible backend connection, so when someone submits a reservation request or catering question, it likely never reaches you."
-body_paragraphs[1]: "I'm Cameron, I run Solvyn, a Phoenix-based consulting firm. I fix exactly this kind of thing for local restaurants, no retainer required."
-closing_paragraph: "Want me to send the full audit?"
+subject: "Your contact page on Little Mesa Cafe"
+audit_findings[0]: "The contact form shows no confirmation message after submitting, so it's unclear if the message was received."
+audit_findings[1]: "No Google Business schema on the homepage reduces how often the restaurant appears in local 'cafe near me' search results."
+body_paragraphs[0]: "I'm Cameron, I run Solvyn, a Phoenix-based technology and AI consulting firm. We work with local restaurants to take a closer look at how their business shows up online."
+body_paragraphs[1]: "Taking a look at your Contact page, I noticed the form has no visible confirmation after submitting. Curious whether that's intentional or something that's been on your list."
+body_paragraphs[2]: "We offer a free initial consultation, no cost and no commitment, where I'll walk through how your business shows up across Google search, your site's SEO, the pages themselves, and whether visitors have a clear next step once they land."
+body_paragraphs[3]: "What feels like it's working right now, and is there anything you've been meaning to look at?"
+closing_paragraph: "Worth 15 minutes this week to talk through it? Reply and I'll send over a few times that work. No pressure if it's not a priority right now."
 
 HARD RULES:
 - No em dashes anywhere in any field. Use a period or rephrase.
 - No bullet lists inside body_paragraphs.
-- body_paragraphs must be exactly 2 items.
-- Total word count across both body_paragraphs: 100-125 words.
-- audit_findings must follow the visual → functional → discovery order.
-- Do not repeat the same finding across all three audit_findings items.
+- body_paragraphs must be exactly 4 items in the order above.
+- audit_findings must be exactly 2 items. Do NOT repeat the observation from body_paragraphs[1].
+- No cost-verdict language anywhere ("costing you," "losing you," "hurting your").
+- closing_paragraph must match the calibration example exactly — do not vary it.
 - Return ONLY the JSON array, no other text.
 `.trim();
 

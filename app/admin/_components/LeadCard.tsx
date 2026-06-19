@@ -219,7 +219,7 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
               </div>
 
               <div>
-                <p className="text-xs font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wide mb-2" style={{ fontFamily: "var(--font-inter)" }}>What's costing them leads</p>
+                <p className="text-xs font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-wide mb-2" style={{ fontFamily: "var(--font-inter)" }}>A few things I noticed</p>
                 <ul className="space-y-1.5">
                   {lead.audit_findings.map((f, i) => (
                     <li key={i} className="flex gap-2.5 items-start text-sm text-zinc-600 dark:text-zinc-400" style={{ fontFamily: "var(--font-inter)" }}>
