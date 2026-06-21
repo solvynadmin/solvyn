@@ -112,10 +112,15 @@ export function Hero() {
             initial={prefersReducedMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, ease: "easeOut", delay: 0.38 }}
-            className="mt-5 text-sm text-zinc-500 dark:text-zinc-500"
+            className="mt-6 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 font-medium"
             style={{ fontFamily: "var(--font-inter)" }}
           >
-            Free initial consultation. No commitment required.
+            <span className="inline-block w-4 h-4 rounded-full bg-teal-700 dark:bg-teal-400 flex-shrink-0 flex items-center justify-center" aria-hidden="true">
+              <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
+                <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+            Free initial consultation — no commitment required.
           </motion.p>
         </div>
       </div>

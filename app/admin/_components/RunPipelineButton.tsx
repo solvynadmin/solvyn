@@ -50,12 +50,12 @@ export function RunPipelineButton({ lastRun }: { lastRun?: { ran_at: string; lea
         type="button"
         onClick={handleRun}
         disabled={running}
-        className="flex items-center gap-2 px-3 py-1.5 rounded-[7px] border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="flex items-center gap-2 px-3 py-1.5 rounded-[7px] bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-sm font-medium hover:bg-zinc-700 dark:hover:bg-zinc-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         style={{ fontFamily: "var(--font-inter)" }}
       >
         {running ? (
           <>
-            <svg className="animate-spin w-3.5 h-3.5 text-zinc-400" viewBox="0 0 24 24" fill="none">
+            <svg className="animate-spin w-3.5 h-3.5 text-zinc-300 dark:text-zinc-600" viewBox="0 0 24 24" fill="none">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z" />
             </svg>

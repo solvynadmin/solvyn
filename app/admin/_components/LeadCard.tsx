@@ -200,9 +200,11 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
                           const next = [...bodyParas];
                           next[i] = e.target.value;
                           setBodyParas(next);
+                          e.target.style.height = "auto";
+                          e.target.style.height = e.target.scrollHeight + "px";
                         }}
-                        rows={3}
-                        className="flex-1 px-3 py-2 text-sm rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 outline-none focus:ring-2 focus:ring-teal-700 dark:focus:ring-teal-400 resize-y"
+                        rows={Math.max(2, Math.ceil(para.length / 70))}
+                        className="flex-1 px-3 py-2 text-sm rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 outline-none focus:ring-2 focus:ring-teal-700 dark:focus:ring-teal-400 resize-none overflow-hidden"
                         style={{ fontFamily: "var(--font-inter)" }}
                       />
                       <button
@@ -270,9 +272,13 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
                 <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5 uppercase tracking-wide" style={{ fontFamily: "var(--font-inter)" }}>Closing paragraph</label>
                 <textarea
                   value={closing}
-                  onChange={(e) => setClosing(e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 text-sm rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 outline-none focus:ring-2 focus:ring-teal-700 dark:focus:ring-teal-400 resize-y"
+                  onChange={(e) => {
+                    setClosing(e.target.value);
+                    e.target.style.height = "auto";
+                    e.target.style.height = e.target.scrollHeight + "px";
+                  }}
+                  rows={Math.max(2, Math.ceil(closing.length / 70))}
+                  className="w-full px-3 py-2 text-sm rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 outline-none focus:ring-2 focus:ring-teal-700 dark:focus:ring-teal-400 resize-none overflow-hidden"
                   style={{ fontFamily: "var(--font-inter)" }}
                 />
               </div>

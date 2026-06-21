@@ -115,7 +115,9 @@ export function Nav() {
             aria-label={mounted && resolvedTheme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
             className="p-2 rounded-[7px] text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
           >
-            {mounted && resolvedTheme === "dark" ? <SunIcon /> : <MoonIcon />}
+            {!mounted ? (
+              <span className="inline-block w-[18px] h-[18px]" aria-hidden="true" />
+            ) : resolvedTheme === "dark" ? <SunIcon /> : <MoonIcon />}
           </button>
 
           <a

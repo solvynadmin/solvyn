@@ -50,6 +50,12 @@ export function Footer() {
             &copy; <CurrentYear /> Solvyn LLC
           </p>
           <a
+            href="mailto:contactus@solvynconsulting.com"
+            className="text-sm text-zinc-400 dark:text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+          >
+            contactus@solvynconsulting.com
+          </a>
+          <a
             href="/privacy"
             className="text-sm text-zinc-400 dark:text-zinc-600 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
           >
