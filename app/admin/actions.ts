@@ -89,6 +89,22 @@ export async function batchDiscardLeads(ids: string[]) {
   revalidatePath("/admin");
 }
 
+export async function batchSendLeads(ids: string[]): Promise<{ sent: number; skipped: number; errors: number }> {
+  if (!ids.length) return { sent: 0, skipped: 0, errors: 0 };
+  let sent = 0, skipped = 0, errors = 0;
+  for (const id of ids) {
+    try {
+      const result = await sendLeadEmail(id);
+      if (result.ok) sent++;
+      else skipped++;
+    } catch {
+      errors++;
+    }
+  }
+  revalidatePath("/admin");
+  return { sent, skipped, errors };
+}
+
 export async function updateLeadEmail(id: string, email: string) {
   await getSupabase()
     .from("outreach_leads")

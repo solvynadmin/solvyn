@@ -1,4 +1,4 @@
-import { getRecentRuns } from "@/lib/pipeline-runs";
+import type { PipelineRun } from "@/lib/pipeline-runs";
 
 function fmt(dateStr: string) {
   return new Date(dateStr).toLocaleDateString("en-US", {
@@ -6,8 +6,7 @@ function fmt(dateStr: string) {
   });
 }
 
-export async function PipelineHistory() {
-  const runs = await getRecentRuns(10);
+export function PipelineHistory({ runs }: { runs: PipelineRun[] }) {
   if (!runs.length) return null;
 
   return (

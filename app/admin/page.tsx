@@ -60,9 +60,16 @@ export default async function AdminPage() {
 
         {/* Sent log */}
         <section>
-          <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-50 mb-5" style={{ fontFamily: "var(--font-space-grotesk)" }}>
-            Sent
-          </h2>
+          <div className="flex items-baseline gap-3 mb-5">
+            <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-50" style={{ fontFamily: "var(--font-space-grotesk)" }}>
+              Sent
+            </h2>
+            {sentCount > 20 && (
+              <span className="text-xs text-zinc-400 dark:text-zinc-500" style={{ fontFamily: "var(--font-inter)" }}>
+                showing last 20 of {sentCount}
+              </span>
+            )}
+          </div>
           {sentCount === 0 ? (
             <div className="rounded-[10px] border border-dashed border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-10 text-center">
               <p className="text-sm text-zinc-400 dark:text-zinc-600" style={{ fontFamily: "var(--font-inter)" }}>
@@ -91,7 +98,7 @@ export default async function AdminPage() {
         </section>
 
         {/* Pipeline history */}
-        <PipelineHistory />
+        <PipelineHistory runs={runs} />
 
       </main>
   );
