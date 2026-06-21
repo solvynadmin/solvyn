@@ -69,6 +69,24 @@ export function Services() {
             </motion.div>
           ))}
         </div>
+
+        <FadeIn>
+          <div className="mt-14 pt-10 border-t border-zinc-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8">
+            <p
+              className="text-zinc-500 dark:text-zinc-400"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Not sure which service fits your situation?
+            </p>
+            <a
+              href="#contact"
+              className="inline-flex items-center gap-1.5 text-sm font-medium text-teal-700 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Start with a conversation <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </FadeIn>
       </div>
     </section>
   );

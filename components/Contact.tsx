@@ -47,6 +47,7 @@ export function Contact() {
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
       errs.email = "Please enter a valid email address.";
     }
+    if (!form.message.trim()) errs.message = "Please tell us what you're looking to solve.";
     return errs;
   }
 
@@ -259,7 +260,8 @@ export function Contact() {
                   className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5"
                   style={{ fontFamily: "var(--font-inter)" }}
                 >
-                  Company
+                  Company{" "}
+                  <span className="text-zinc-500 dark:text-zinc-500 font-normal">(optional)</span>
                 </label>
                 <input
                   id="company"
@@ -305,7 +307,8 @@ export function Contact() {
                 className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5"
                 style={{ fontFamily: "var(--font-inter)" }}
               >
-                Approximate budget
+                Approximate budget{" "}
+                <span className="text-zinc-500 dark:text-zinc-500 font-normal">(optional)</span>
               </label>
               <select
                 id="budget"
@@ -329,18 +332,28 @@ export function Contact() {
                 className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5"
                 style={{ fontFamily: "var(--font-inter)" }}
               >
-                What are you looking to solve?
+                What are you looking to solve?{" "}
+                <span className="text-teal-700 dark:text-teal-400" aria-hidden="true">*</span>
               </label>
               <textarea
                 id="message"
                 name="message"
                 rows={5}
+                required
+                aria-required="true"
+                aria-invalid={!!errors.message}
+                aria-describedby={errors.message ? "message-error" : undefined}
                 value={form.message}
                 onChange={handleChange}
                 placeholder="Tell us about your business and what you're trying to build or fix."
                 className={`${inputClass} resize-none`}
                 style={{ fontFamily: "var(--font-inter)" }}
               />
+              {errors.message && (
+                <p id="message-error" role="alert" className="mt-1.5 text-sm text-red-600" style={{ fontFamily: "var(--font-inter)" }}>
+                  {errors.message}
+                </p>
+              )}
             </div>
 
             {/* Honeypot — hidden from real users */}

@@ -31,8 +31,8 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
   const [expanded, setExpanded] = useState(false);
   const [editing, setEditing] = useState(false);
   const [subject, setSubject] = useState(lead.subject);
-  const [findings, setFindings] = useState(lead.audit_findings.join("\n"));
-  const [bodyParas, setBodyParas] = useState(lead.body_paragraphs.join("\n\n"));
+  const [findings, setFindings] = useState<string[]>(lead.audit_findings);
+  const [bodyParas, setBodyParas] = useState<string[]>(lead.body_paragraphs);
   const [closing, setClosing] = useState(lead.closing_paragraph);
   const [emailInput, setEmailInput] = useState("");
   const [confirming, setConfirming] = useState(false);
@@ -65,8 +65,8 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
     startTransition(async () => {
       await updateLeadDraft(lead.id, {
         subject,
-        body_paragraphs: bodyParas.split("\n\n").map((p) => p.trim()).filter(Boolean),
-        audit_findings: findings.split("\n").map((f) => f.trim()).filter(Boolean),
+        body_paragraphs: bodyParas.map((p) => p.trim()).filter(Boolean),
+        audit_findings: findings.map((f) => f.trim()).filter(Boolean),
         closing_paragraph: closing,
       });
       setEditing(false);
@@ -175,7 +175,9 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
         <div className="border-t border-zinc-100 dark:border-zinc-800 px-5 py-5 space-y-5">
 
           {editing ? (
-            <div className="space-y-4">
+            <div className="space-y-5">
+
+              {/* Subject */}
               <div>
                 <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5 uppercase tracking-wide" style={{ fontFamily: "var(--font-inter)" }}>Subject</label>
                 <input
@@ -185,26 +187,85 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
                   style={{ fontFamily: "var(--font-inter)" }}
                 />
               </div>
+
+              {/* Body paragraphs — one textarea per paragraph */}
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5 uppercase tracking-wide" style={{ fontFamily: "var(--font-inter)" }}>Body paragraphs (separate with blank line)</label>
-                <textarea
-                  value={bodyParas}
-                  onChange={(e) => setBodyParas(e.target.value)}
-                  rows={6}
-                  className="w-full px-3 py-2 text-sm rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 outline-none focus:ring-2 focus:ring-teal-700 dark:focus:ring-teal-400 resize-y"
-                  style={{ fontFamily: "var(--font-inter)" }}
-                />
+                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-2 uppercase tracking-wide" style={{ fontFamily: "var(--font-inter)" }}>Body paragraphs</label>
+                <div className="space-y-2">
+                  {bodyParas.map((para, i) => (
+                    <div key={i} className="flex gap-2 items-start">
+                      <textarea
+                        value={para}
+                        onChange={(e) => {
+                          const next = [...bodyParas];
+                          next[i] = e.target.value;
+                          setBodyParas(next);
+                        }}
+                        rows={3}
+                        className="flex-1 px-3 py-2 text-sm rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 outline-none focus:ring-2 focus:ring-teal-700 dark:focus:ring-teal-400 resize-y"
+                        style={{ fontFamily: "var(--font-inter)" }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setBodyParas(bodyParas.filter((_, j) => j !== i))}
+                        className="mt-2 text-zinc-300 dark:text-zinc-700 hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors text-xs shrink-0"
+                        style={{ fontFamily: "var(--font-inter)" }}
+                        aria-label="Remove paragraph"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setBodyParas([...bodyParas, ""])}
+                    className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-teal-700 dark:hover:text-teal-400 transition-colors"
+                    style={{ fontFamily: "var(--font-inter)" }}
+                  >
+                    + Add paragraph
+                  </button>
+                </div>
               </div>
+
+              {/* Audit findings — one input per finding */}
               <div>
-                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5 uppercase tracking-wide" style={{ fontFamily: "var(--font-inter)" }}>Audit findings (one per line)</label>
-                <textarea
-                  value={findings}
-                  onChange={(e) => setFindings(e.target.value)}
-                  rows={4}
-                  className="w-full px-3 py-2 text-sm rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 outline-none focus:ring-2 focus:ring-teal-700 dark:focus:ring-teal-400 resize-y"
-                  style={{ fontFamily: "var(--font-inter)" }}
-                />
+                <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-2 uppercase tracking-wide" style={{ fontFamily: "var(--font-inter)" }}>Audit findings</label>
+                <div className="space-y-2">
+                  {findings.map((finding, i) => (
+                    <div key={i} className="flex gap-2 items-center">
+                      <input
+                        value={finding}
+                        onChange={(e) => {
+                          const next = [...findings];
+                          next[i] = e.target.value;
+                          setFindings(next);
+                        }}
+                        className="flex-1 px-3 py-2 text-sm rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 outline-none focus:ring-2 focus:ring-teal-700 dark:focus:ring-teal-400"
+                        style={{ fontFamily: "var(--font-inter)" }}
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setFindings(findings.filter((_, j) => j !== i))}
+                        className="text-zinc-300 dark:text-zinc-700 hover:text-zinc-500 dark:hover:text-zinc-400 transition-colors text-xs shrink-0"
+                        style={{ fontFamily: "var(--font-inter)" }}
+                        aria-label="Remove finding"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => setFindings([...findings, ""])}
+                    className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-teal-700 dark:hover:text-teal-400 transition-colors"
+                    style={{ fontFamily: "var(--font-inter)" }}
+                  >
+                    + Add finding
+                  </button>
+                </div>
               </div>
+
+              {/* Closing paragraph */}
               <div>
                 <label className="block text-xs font-medium text-zinc-500 dark:text-zinc-400 mb-1.5 uppercase tracking-wide" style={{ fontFamily: "var(--font-inter)" }}>Closing paragraph</label>
                 <textarea
@@ -215,6 +276,7 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
                   style={{ fontFamily: "var(--font-inter)" }}
                 />
               </div>
+
             </div>
           ) : (
             <div className="space-y-4">
