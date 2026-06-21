@@ -3,12 +3,13 @@
 import { useState, useTransition } from "react";
 import { saveSettingsAction } from "../actions";
 import type { PipelineSettings, IndustryConfig, Frequency } from "@/lib/pipeline-settings";
+import { EMAIL_TONE } from "@/pipeline.config";
 
 const FREQUENCY_OPTIONS: { value: Frequency; label: string; detail: string }[] = [
-  { value: "daily",        label: "Daily",        detail: "Every day at 9 AM UTC" },
-  { value: "twice_weekly", label: "Twice a week", detail: "Monday and Thursday" },
-  { value: "weekly",       label: "Weekly",       detail: "Every Monday" },
-  { value: "weekdays",     label: "Weekdays",     detail: "Monday through Friday" },
+  { value: "daily",        label: "Daily",        detail: "Every day · 9 AM UTC / 2 AM AZ" },
+  { value: "twice_weekly", label: "Twice a week", detail: "Mon & Thu · 9 AM UTC / 2 AM AZ" },
+  { value: "weekly",       label: "Weekly",       detail: "Every Monday · 9 AM UTC / 2 AM AZ" },
+  { value: "weekdays",     label: "Weekdays",     detail: "Mon–Fri · 9 AM UTC / 2 AM AZ" },
 ];
 
 export function SettingsForm({ settings }: { settings: PipelineSettings }) {
@@ -23,7 +24,7 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
   const [dirty, setDirty] = useState(false);
   const [isPending, startTransition] = useTransition();
 
-  function markDirty() { markDirty(); setDirty(true); }
+  function markDirty() { setSaved(false); setDirty(true); }
 
   function toggleIndustry(slug: string) {
     setIndustries((prev) =>
@@ -235,7 +236,24 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
 
       {/* Email tone */}
       <div className={card}>
-        {label("Email tone instructions")}
+        <div className="flex items-center justify-between mb-2">
+          <p
+            className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide"
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            Email tone instructions
+          </p>
+          {emailTone !== EMAIL_TONE && (
+            <button
+              type="button"
+              onClick={() => { setEmailTone(EMAIL_TONE); markDirty(); }}
+              className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-teal-700 dark:hover:text-teal-400 transition-colors"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Reset to default
+            </button>
+          )}
+        </div>
         <textarea
           value={emailTone}
           onChange={(e) => { setEmailTone(e.target.value); markDirty(); }}

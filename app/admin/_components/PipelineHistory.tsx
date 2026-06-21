@@ -7,7 +7,23 @@ function fmt(dateStr: string) {
 }
 
 export function PipelineHistory({ runs }: { runs: PipelineRun[] }) {
-  if (!runs.length) return null;
+  if (!runs.length) {
+    return (
+      <section>
+        <h2
+          className="text-sm font-medium text-zinc-500 dark:text-zinc-400 mb-3 uppercase tracking-wide"
+          style={{ fontFamily: "var(--font-inter)" }}
+        >
+          Pipeline history
+        </h2>
+        <div className="rounded-[10px] border border-dashed border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-10 text-center">
+          <p className="text-sm text-zinc-400 dark:text-zinc-600" style={{ fontFamily: "var(--font-inter)" }}>
+            No runs yet. Hit <strong className="text-zinc-500 dark:text-zinc-500">Run now</strong> above to start the pipeline.
+          </p>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section>

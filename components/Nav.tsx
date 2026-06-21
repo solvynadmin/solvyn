@@ -50,6 +50,8 @@ export function Nav() {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   }
 
+  const servicesHref = pathname === "/" ? "#services" : "/#services";
+  const faqHref = pathname === "/" ? "#faq" : "/#faq";
   const contactHref = pathname === "/" ? "#contact" : "/contact";
 
   return (
@@ -92,6 +94,20 @@ export function Nav() {
             style={{ fontFamily: "var(--font-inter)" }}
           >
             About
+          </a>
+          <a
+            href={servicesHref}
+            className="hidden sm:block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            Services
+          </a>
+          <a
+            href={faqHref}
+            className="hidden sm:block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            FAQ
           </a>
 
           <button
@@ -146,6 +162,20 @@ export function Nav() {
             }`}
           >
             About
+          </a>
+          <a
+            href={servicesHref}
+            onClick={() => setMenuOpen(false)}
+            className="block px-3 py-2.5 rounded-[7px] text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          >
+            Services
+          </a>
+          <a
+            href={faqHref}
+            onClick={() => setMenuOpen(false)}
+            className="block px-3 py-2.5 rounded-[7px] text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          >
+            FAQ
           </a>
           <a
             href={contactHref}

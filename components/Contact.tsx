@@ -96,7 +96,7 @@ export function Contact() {
 
   if (status === "success") {
     return (
-      <section id="contact" className="py-20 md:py-28">
+      <section id="contact" className="py-20 md:py-28 border-t border-zinc-200 dark:border-zinc-800">
         <div className="max-w-[1200px] mx-auto px-6 md:px-8">
           <FadeIn>
             <div className="flex items-start gap-4 mb-4">
@@ -112,11 +112,27 @@ export function Contact() {
               </h2>
             </div>
             <p
-              className="text-lg text-zinc-500 dark:text-zinc-400 ml-12"
+              className="text-lg text-zinc-500 dark:text-zinc-400 ml-12 mb-8"
               style={{ fontFamily: "var(--font-inter)" }}
             >
               Thanks for reaching out. We&apos;ll follow up within one business day.
             </p>
+            <div className="ml-12 flex flex-wrap gap-4">
+              <a
+                href="/about"
+                className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                About us →
+              </a>
+              <a
+                href="#services"
+                className="text-sm font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+                style={{ fontFamily: "var(--font-inter)" }}
+              >
+                What we do →
+              </a>
+            </div>
           </FadeIn>
         </div>
       </section>
@@ -124,7 +140,7 @@ export function Contact() {
   }
 
   return (
-    <section id="contact" className="py-20 md:py-28">
+    <section id="contact" className="py-20 md:py-28 border-t border-zinc-200 dark:border-zinc-800">
       <div className="max-w-[1200px] mx-auto px-6 md:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_2fr] gap-16 lg:gap-24 items-start">
           {/* Left: decorative panel */}

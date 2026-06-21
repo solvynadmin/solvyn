@@ -32,12 +32,22 @@ export default async function AdminPage() {
             { label: "Pending", count: pendingCount },
             { label: "Sent", count: sentCount },
             { label: "Discarded", count: discardedCount },
-          ].map(({ label, count }) => (
-            <div key={label} className="rounded-[10px] border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-5 py-4">
-              <p className="text-xs text-zinc-400 dark:text-zinc-500 mb-1" style={{ fontFamily: "var(--font-inter)" }}>{label}</p>
-              <p className="text-2xl font-medium text-zinc-900 dark:text-zinc-50" style={{ fontFamily: "var(--font-space-grotesk)" }}>{count}</p>
-            </div>
-          ))}
+          ].map(({ label, count }) => {
+            const urgent = label === "Pending" && count > 0;
+            return (
+              <div
+                key={label}
+                className={`rounded-[10px] border px-5 py-4 transition-colors ${
+                  urgent
+                    ? "border-teal-200 dark:border-teal-800 bg-teal-50 dark:bg-teal-950/30"
+                    : "border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900"
+                }`}
+              >
+                <p className={`text-xs mb-1 ${urgent ? "text-teal-700 dark:text-teal-400" : "text-zinc-400 dark:text-zinc-500"}`} style={{ fontFamily: "var(--font-inter)" }}>{label}</p>
+                <p className={`text-2xl font-medium ${urgent ? "text-teal-700 dark:text-teal-300" : "text-zinc-900 dark:text-zinc-50"}`} style={{ fontFamily: "var(--font-space-grotesk)" }}>{count}</p>
+              </div>
+            );
+          })}
         </div>
 
         {/* Run pipeline */}
