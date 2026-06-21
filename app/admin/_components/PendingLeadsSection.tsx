@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { LeadCard } from "./LeadCard";
-import { batchDiscardLeads } from "../actions";
+import { batchDiscardLeads, batchSendLeads } from "../actions";
 
 type Lead = {
   id: string;
@@ -22,7 +22,12 @@ type Lead = {
 
 export function PendingLeadsSection({ leads }: { leads: Lead[] }) {
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [sendConfirming, setSendConfirming] = useState(false);
+  const [discardConfirming, setDiscardConfirming] = useState(false);
+  const [sendResult, setSendResult] = useState<{ sent: number; skipped: number; errors: number } | null>(null);
   const [isPending, startTransition] = useTransition();
+
+  function clearConfirms() { setSendConfirming(false); setDiscardConfirming(false); }
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -30,18 +35,33 @@ export function PendingLeadsSection({ leads }: { leads: Lead[] }) {
       next.has(id) ? next.delete(id) : next.add(id);
       return next;
     });
+    clearConfirms();
+    setSendResult(null);
   }
 
   function toggleAll() {
     setSelected((prev) =>
       prev.size === leads.length ? new Set() : new Set(leads.map((l) => l.id))
     );
+    clearConfirms();
+    setSendResult(null);
   }
 
   function handleBatchDiscard() {
     const ids = [...selected];
+    setDiscardConfirming(false);
     startTransition(async () => {
       await batchDiscardLeads(ids);
+      setSelected(new Set());
+    });
+  }
+
+  function handleBatchSend() {
+    const ids = [...selected].filter((id) => leads.find((l) => l.id === id)?.recipient_email);
+    clearConfirms();
+    startTransition(async () => {
+      const result = await batchSendLeads(ids);
+      setSendResult(result);
       setSelected(new Set());
     });
   }
@@ -83,16 +103,84 @@ export function PendingLeadsSection({ leads }: { leads: Lead[] }) {
           </span>
         </label>
 
-        {anySelected && (
-          <button
-            type="button"
-            onClick={handleBatchDiscard}
-            disabled={isPending}
-            className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors disabled:opacity-50"
-            style={{ fontFamily: "var(--font-inter)" }}
-          >
-            {isPending ? "Discarding..." : `Discard ${selected.size}`}
-          </button>
+        {anySelected && !sendConfirming && !discardConfirming && (
+          <>
+            {sendResult && (
+              <span className="text-xs text-teal-700 dark:text-teal-400" style={{ fontFamily: "var(--font-inter)" }}>
+                {sendResult.sent} sent{sendResult.skipped > 0 ? `, ${sendResult.skipped} skipped` : ""}{sendResult.errors > 0 ? `, ${sendResult.errors} failed` : ""}
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={() => setSendConfirming(true)}
+              disabled={isPending}
+              className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-teal-700 dark:hover:text-teal-400 transition-colors disabled:opacity-50"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Send {selected.size}
+            </button>
+            <button
+              type="button"
+              onClick={() => setDiscardConfirming(true)}
+              disabled={isPending}
+              className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-red-500 dark:hover:text-red-400 transition-colors disabled:opacity-50"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Discard {selected.size}
+            </button>
+          </>
+        )}
+
+        {anySelected && sendConfirming && (
+          <>
+            <span className="text-xs text-zinc-500 dark:text-zinc-400" style={{ fontFamily: "var(--font-inter)" }}>
+              Send {selected.size} email{selected.size === 1 ? "" : "s"}?
+            </span>
+            <button
+              type="button"
+              onClick={handleBatchSend}
+              disabled={isPending}
+              className="text-xs text-teal-700 dark:text-teal-400 hover:text-teal-800 dark:hover:text-teal-300 transition-colors disabled:opacity-50 font-medium"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              {isPending ? "Sending..." : "Confirm"}
+            </button>
+            <button
+              type="button"
+              onClick={clearConfirms}
+              disabled={isPending}
+              className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Cancel
+            </button>
+          </>
+        )}
+
+        {anySelected && discardConfirming && (
+          <>
+            <span className="text-xs text-zinc-500 dark:text-zinc-400" style={{ fontFamily: "var(--font-inter)" }}>
+              Discard {selected.size} lead{selected.size === 1 ? "" : "s"}?
+            </span>
+            <button
+              type="button"
+              onClick={handleBatchDiscard}
+              disabled={isPending}
+              className="text-xs text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 transition-colors disabled:opacity-50 font-medium"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              {isPending ? "Discarding..." : "Confirm"}
+            </button>
+            <button
+              type="button"
+              onClick={clearConfirms}
+              disabled={isPending}
+              className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-zinc-600 dark:hover:text-zinc-300 transition-colors disabled:opacity-50"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Cancel
+            </button>
+          </>
         )}
       </div>
 

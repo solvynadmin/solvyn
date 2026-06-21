@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { FadeIn } from "@/components/FadeIn";
 
 const faqs = [
@@ -103,14 +104,25 @@ export function FAQ() {
                   </span>
                 </button>
 
-                {openIndex === i && (
-                  <p
-                    className="pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed"
-                    style={{ fontFamily: "var(--font-inter)" }}
-                  >
-                    {faq.answer}
-                  </p>
-                )}
+                <AnimatePresence initial={false}>
+                  {openIndex === i && (
+                    <motion.div
+                      key="answer"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                      style={{ overflow: "hidden" }}
+                    >
+                      <p
+                        className="pb-6 text-zinc-600 dark:text-zinc-400 leading-relaxed"
+                        style={{ fontFamily: "var(--font-inter)" }}
+                      >
+                        {faq.answer}
+                      </p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
             </FadeIn>
           ))}

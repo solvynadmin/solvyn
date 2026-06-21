@@ -3,12 +3,13 @@
 import { useState, useTransition } from "react";
 import { saveSettingsAction } from "../actions";
 import type { PipelineSettings, IndustryConfig, Frequency } from "@/lib/pipeline-settings";
+import { EMAIL_TONE } from "@/pipeline.config";
 
 const FREQUENCY_OPTIONS: { value: Frequency; label: string; detail: string }[] = [
-  { value: "daily",        label: "Daily",        detail: "Every day at 9 AM UTC" },
-  { value: "twice_weekly", label: "Twice a week", detail: "Monday and Thursday" },
-  { value: "weekly",       label: "Weekly",       detail: "Every Monday" },
-  { value: "weekdays",     label: "Weekdays",     detail: "Monday through Friday" },
+  { value: "daily",        label: "Daily",        detail: "Every day · 9 AM UTC / 2 AM AZ" },
+  { value: "twice_weekly", label: "Twice a week", detail: "Mon & Thu · 9 AM UTC / 2 AM AZ" },
+  { value: "weekly",       label: "Weekly",       detail: "Every Monday · 9 AM UTC / 2 AM AZ" },
+  { value: "weekdays",     label: "Weekdays",     detail: "Mon–Fri · 9 AM UTC / 2 AM AZ" },
 ];
 
 export function SettingsForm({ settings }: { settings: PipelineSettings }) {
@@ -20,18 +21,21 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
   const [frequency, setFrequency] = useState<Frequency>(settings.frequency);
   const [newIndustryLabel, setNewIndustryLabel] = useState("");
   const [saved, setSaved] = useState(false);
+  const [dirty, setDirty] = useState(false);
   const [isPending, startTransition] = useTransition();
+
+  function markDirty() { setSaved(false); setDirty(true); }
 
   function toggleIndustry(slug: string) {
     setIndustries((prev) =>
       prev.map((i) => (i.slug === slug ? { ...i, enabled: !i.enabled } : i))
     );
-    setSaved(false);
+    markDirty();
   }
 
   function removeIndustry(slug: string) {
     setIndustries((prev) => prev.filter((i) => i.slug !== slug));
-    setSaved(false);
+    markDirty();
   }
 
   function addIndustry() {
@@ -40,7 +44,7 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
     const slug = label.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
     setIndustries((prev) => [...prev, { slug, label, enabled: true }]);
     setNewIndustryLabel("");
-    setSaved(false);
+    markDirty();
   }
 
   function handleSave() {
@@ -55,6 +59,7 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
     startTransition(async () => {
       await saveSettingsAction(formData);
       setSaved(true);
+      setDirty(false);
     });
   }
 
@@ -85,7 +90,7 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
           </div>
           <button
             type="button"
-            onClick={() => { setEnabled((v) => !v); setSaved(false); }}
+            onClick={() => { setEnabled((v) => !v); markDirty(); }}
             className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
               enabled ? "bg-teal-700 dark:bg-teal-400" : "bg-zinc-200 dark:bg-zinc-700"
             }`}
@@ -166,7 +171,7 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
         {label("Locations (one per line)")}
         <textarea
           value={locations}
-          onChange={(e) => { setLocations(e.target.value); setSaved(false); }}
+          onChange={(e) => { setLocations(e.target.value); markDirty(); }}
           rows={6}
           className="w-full px-3 py-2 text-sm rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 outline-none focus:ring-2 focus:ring-teal-700 dark:focus:ring-teal-400 resize-y"
           style={{ fontFamily: "var(--font-inter)" }}
@@ -185,7 +190,7 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
             min={1}
             max={20}
             value={maxLeads}
-            onChange={(e) => { setMaxLeads(Number(e.target.value)); setSaved(false); }}
+            onChange={(e) => { setMaxLeads(Number(e.target.value)); markDirty(); }}
             className="flex-1 accent-teal-700 dark:accent-teal-400"
           />
           <span
@@ -208,7 +213,7 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
             <button
               key={opt.value}
               type="button"
-              onClick={() => { setFrequency(opt.value); setSaved(false); }}
+              onClick={() => { setFrequency(opt.value); markDirty(); }}
               className={`text-left px-4 py-3 rounded-[7px] border transition-colors ${
                 frequency === opt.value
                   ? "border-teal-700 dark:border-teal-400 bg-teal-50 dark:bg-teal-950/30"
@@ -231,10 +236,27 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
 
       {/* Email tone */}
       <div className={card}>
-        {label("Email tone instructions")}
+        <div className="flex items-center justify-between mb-2">
+          <p
+            className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase tracking-wide"
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            Email tone instructions
+          </p>
+          {emailTone !== EMAIL_TONE && (
+            <button
+              type="button"
+              onClick={() => { setEmailTone(EMAIL_TONE); markDirty(); }}
+              className="text-xs text-zinc-400 dark:text-zinc-500 hover:text-teal-700 dark:hover:text-teal-400 transition-colors"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              Reset to default
+            </button>
+          )}
+        </div>
         <textarea
           value={emailTone}
-          onChange={(e) => { setEmailTone(e.target.value); setSaved(false); }}
+          onChange={(e) => { setEmailTone(e.target.value); markDirty(); }}
           rows={6}
           className="w-full px-3 py-2 text-sm rounded-[7px] border border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-50 outline-none focus:ring-2 focus:ring-teal-700 dark:focus:ring-teal-400 resize-y"
           style={{ fontFamily: "var(--font-inter)" }}
@@ -255,9 +277,14 @@ export function SettingsForm({ settings }: { settings: PipelineSettings }) {
         >
           {isPending ? "Saving..." : "Save settings"}
         </button>
-        {saved && (
+        {saved && !dirty && (
           <span className="text-sm text-teal-700 dark:text-teal-400" style={{ fontFamily: "var(--font-inter)" }}>
             Saved.
+          </span>
+        )}
+        {dirty && !isPending && (
+          <span className="text-sm text-zinc-400 dark:text-zinc-500" style={{ fontFamily: "var(--font-inter)" }}>
+            Unsaved changes
           </span>
         )}
       </div>

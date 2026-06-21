@@ -30,7 +30,7 @@ export default function AboutPage() {
               className="text-4xl md:text-5xl font-bold text-zinc-900 dark:text-zinc-50 tracking-tight"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
             >
-              About Solvyn
+              One firm. End to end.
             </h1>
           </div>
 
@@ -44,7 +44,7 @@ export default function AboutPage() {
             <section aria-labelledby="about-problem">
               <h2
                 id="about-problem"
-                className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mb-5"
+                className="text-2xl font-medium text-zinc-900 dark:text-zinc-50 mb-5"
                 style={{ fontFamily: "var(--font-space-grotesk)" }}
               >
                 The problem we kept seeing
@@ -67,7 +67,7 @@ export default function AboutPage() {
             <section aria-labelledby="about-why">
               <h2
                 id="about-why"
-                className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mb-5"
+                className="text-2xl font-medium text-zinc-900 dark:text-zinc-50 mb-5"
                 style={{ fontFamily: "var(--font-space-grotesk)" }}
               >
                 Why we built Solvyn
@@ -93,7 +93,7 @@ export default function AboutPage() {
             <section aria-labelledby="about-who">
               <h2
                 id="about-who"
-                className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mb-5"
+                className="text-2xl font-medium text-zinc-900 dark:text-zinc-50 mb-5"
                 style={{ fontFamily: "var(--font-space-grotesk)" }}
               >
                 Who we are
@@ -113,7 +113,7 @@ export default function AboutPage() {
             <section aria-labelledby="about-name">
               <h2
                 id="about-name"
-                className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mb-5"
+                className="text-2xl font-medium text-zinc-900 dark:text-zinc-50 mb-5"
                 style={{ fontFamily: "var(--font-space-grotesk)" }}
               >
                 The name
@@ -133,7 +133,7 @@ export default function AboutPage() {
             <section aria-labelledby="about-beliefs">
               <h2
                 id="about-beliefs"
-                className="text-2xl font-semibold text-zinc-900 dark:text-zinc-50 mb-6"
+                className="text-2xl font-medium text-zinc-900 dark:text-zinc-50 mb-6"
                 style={{ fontFamily: "var(--font-space-grotesk)" }}
               >
                 What we believe
