@@ -22,6 +22,9 @@ type Lead = {
 const categoryLabel: Record<string, string> = {
   hvac_plumbing_roofing: "HVAC / Plumbing / Roofing",
   restaurant: "Restaurant",
+  auto_repair: "Auto Repair",
+  dental_chiropractic: "Dental / Chiropractic",
+  landscaping: "Landscaping",
 };
 
 export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: boolean; onSelect?: () => void }) {
@@ -32,6 +35,7 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
   const [bodyParas, setBodyParas] = useState(lead.body_paragraphs.join("\n\n"));
   const [closing, setClosing] = useState(lead.closing_paragraph);
   const [emailInput, setEmailInput] = useState("");
+  const [confirming, setConfirming] = useState(false);
   const [result, setResult] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -44,6 +48,7 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
   }
 
   function handleSend() {
+    setConfirming(false);
     startTransition(async () => {
       const res = await sendLeadEmail(lead.id);
       setResult(res.ok ? "sent" : "unsubscribed");
@@ -286,16 +291,38 @@ export function LeadCard({ lead, selected, onSelect }: { lead: Lead; selected?: 
                     Cancel
                   </button>
                 </>
+              ) : confirming ? (
+                <>
+                  <span className="text-sm text-zinc-500 dark:text-zinc-400 mr-1" style={{ fontFamily: "var(--font-inter)" }}>
+                    Send to {lead.recipient_email}?
+                  </span>
+                  <button
+                    onClick={handleSend}
+                    disabled={isPending}
+                    className="px-4 py-2 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 text-sm font-medium hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors disabled:opacity-50"
+                    style={{ fontFamily: "var(--font-inter)" }}
+                  >
+                    {isPending ? "Sending..." : "Confirm"}
+                  </button>
+                  <button
+                    onClick={() => setConfirming(false)}
+                    disabled={isPending}
+                    className="px-4 py-2 rounded-[7px] border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-600 dark:text-zinc-400 hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors disabled:opacity-50"
+                    style={{ fontFamily: "var(--font-inter)" }}
+                  >
+                    Cancel
+                  </button>
+                </>
               ) : (
                 <>
                   <button
-                    onClick={handleSend}
+                    onClick={() => setConfirming(true)}
                     disabled={isPending || !lead.recipient_email}
                     title={!lead.recipient_email ? "Add an email address first" : undefined}
                     className="px-4 py-2 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 text-sm font-medium hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
                     style={{ fontFamily: "var(--font-inter)" }}
                   >
-                    {isPending ? "Sending..." : "Send"}
+                    Send
                   </button>
                   <a
                     href={`/admin/preview/${lead.id}`}

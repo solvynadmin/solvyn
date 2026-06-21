@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import { getSupabase } from "@/lib/supabase";
 import { getRecentRuns } from "@/lib/pipeline-runs";
-import { logoutAction } from "./login/actions";
 import { RunPipelineButton } from "./_components/RunPipelineButton";
 import { PendingLeadsSection } from "./_components/PendingLeadsSection";
 import { PipelineHistory } from "./_components/PipelineHistory";
-import { SendTestEmailButton } from "./_components/SendTestEmailButton";
 
 export const metadata: Metadata = { title: "Lead Queue" };
 export const dynamic = "force-dynamic";
@@ -13,56 +11,20 @@ export const dynamic = "force-dynamic";
 export default async function AdminPage() {
   const sb = getSupabase();
 
-  const [{ data: pending }, { data: sent }, { data: discarded }, runs] = await Promise.all([
+  const [{ data: pending }, { data: sent, count: sentTotal }, { data: discarded }, runs] = await Promise.all([
     sb.from("outreach_leads").select("*").eq("status", "pending").order("created_at", { ascending: false }),
-    sb.from("outreach_leads").select("id, first_name, company_name, recipient_email, sent_at").eq("status", "sent").order("sent_at", { ascending: false }).limit(20),
+    sb.from("outreach_leads").select("id, first_name, company_name, recipient_email, sent_at", { count: "exact" }).eq("status", "sent").order("sent_at", { ascending: false }).limit(20),
     sb.from("outreach_leads").select("id", { count: "exact", head: true }).eq("status", "discarded"),
     getRecentRuns(10),
   ]);
 
   const pendingCount = pending?.length ?? 0;
-  const sentCount = sent?.length ?? 0;
+  const sentCount = sentTotal ?? 0;
   const discardedCount = (discarded as unknown as { count: number } | null)?.count ?? 0;
   const lastRun = runs[0] ?? null;
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950">
-
-      {/* Top bar */}
-      <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-4 flex items-center justify-between sticky top-0 z-10">
-        <div className="flex items-center gap-5">
-          <span
-            className="text-base font-medium text-zinc-900 dark:text-zinc-50 flex items-center gap-[5px]"
-            style={{ fontFamily: "var(--font-space-grotesk)" }}
-          >
-            Solvyn
-            <span className="inline-block w-[5px] h-[5px] rounded-full bg-teal-700 dark:bg-teal-400 mb-[1px]" />
-            <span className="ml-1 text-zinc-400 dark:text-zinc-600 font-normal">Admin</span>
-          </span>
-          <nav className="flex items-center gap-1" style={{ fontFamily: "var(--font-inter)" }}>
-            <a href="/admin" className="text-sm text-zinc-900 dark:text-zinc-50 px-2 py-1 rounded-md bg-zinc-100 dark:bg-zinc-800">
-              Leads
-            </a>
-            <a href="/admin/settings" className="text-sm text-zinc-400 dark:text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 px-2 py-1 rounded-md transition-colors">
-              Settings
-            </a>
-          </nav>
-        </div>
-        <div className="flex items-center gap-5">
-          <SendTestEmailButton />
-          <form action={logoutAction}>
-            <button
-              type="submit"
-              className="text-sm text-zinc-400 dark:text-zinc-600 hover:text-zinc-700 dark:hover:text-zinc-300 transition-colors"
-              style={{ fontFamily: "var(--font-inter)" }}
-            >
-              Sign out
-            </button>
-          </form>
-        </div>
-      </header>
-
-      <main className="max-w-3xl mx-auto px-4 py-10 space-y-10">
+    <main className="max-w-3xl mx-auto px-4 py-10 space-y-10">
 
         {/* Stats row */}
         <div className="grid grid-cols-3 gap-3">
@@ -132,6 +94,5 @@ export default async function AdminPage() {
         <PipelineHistory />
 
       </main>
-    </div>
   );
 }
