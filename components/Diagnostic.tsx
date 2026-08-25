@@ -60,19 +60,16 @@ const answerTypes = [
     title: "Something that already exists",
     body: "Often the fix is software that's already on the market, or a tool you're already paying for and using at a fraction of what it does. We'll tell you when that's the case, even though there's nothing in it for us.",
     icon: BoxIcon,
-    color: "bg-sky-500 dark:bg-sky-400",
   },
   {
     title: "An automation",
     body: "Connecting the systems you already have so work moves between them on its own, instead of someone rekeying the same information into a second screen.",
     icon: RefreshIcon,
-    color: "bg-violet-500 dark:bg-violet-400",
   },
   {
     title: "A custom build",
     body: "When nothing off the shelf fits how you actually operate, we scope and build it. This is the last option we reach for, not the first.",
     icon: WrenchIcon,
-    color: "bg-amber-500 dark:bg-amber-400",
   },
 ];
 
@@ -81,13 +78,11 @@ const paths = [
     title: "Take it and run",
     body: "You keep the full recommendation, including tool names, configuration notes, and the reasoning behind each call. Hand it to your own team or a developer you already work with. No obligation to come back to us.",
     icon: FlagIcon,
-    color: "bg-indigo-500 dark:bg-indigo-400",
   },
   {
     title: "Have us implement it",
     body: "We build what we recommended and stay involved after it's live. One firm from the first conversation through ongoing support, with nobody to hand you off to.",
     icon: UsersIcon,
-    color: "bg-teal-600 dark:bg-teal-400",
   },
 ];
 
@@ -187,7 +182,7 @@ export function Diagnostic() {
               }}
               className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-8"
             >
-              <div className={`mb-5 inline-flex h-11 w-11 items-center justify-center rounded-[9px] text-white dark:text-zinc-900 ${item.color}`}>
+              <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-[9px] bg-teal-700/10 dark:bg-teal-400/10 text-teal-700 dark:text-teal-400">
                 <item.icon />
               </div>
               <h5
@@ -238,7 +233,7 @@ export function Diagnostic() {
               }}
               className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-8"
             >
-              <div className={`mb-5 inline-flex h-11 w-11 items-center justify-center rounded-[9px] text-white dark:text-zinc-900 ${item.color}`}>
+              <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-[9px] bg-teal-700/10 dark:bg-teal-400/10 text-teal-700 dark:text-teal-400">
                 <item.icon />
               </div>
               <h5

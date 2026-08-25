@@ -37,21 +37,18 @@ const services = [
     description:
       "From a clean marketing site to a custom internal tool or customer-facing app, we design and build what your business needs. After launch, we maintain what we build. No hand-off to a third party once the project is done.",
     icon: LayersIcon,
-    color: "bg-sky-500 dark:bg-sky-400",
   },
   {
     title: "AI Implementation",
     description:
       "If you've got a process that runs on copy-paste, or data sitting in tools that don't talk to each other, AI can probably help. We figure out what's actually realistic for your business, build it, and connect it to the software you already use.",
     icon: SparkleIcon,
-    color: "bg-violet-500 dark:bg-violet-400",
   },
   {
     title: "Systems and Integrations",
     description:
       "We handle the tools your business runs on, from initial setup through day-to-day management. If something in your current stack isn't doing its job, we'll tell you and help find a better path, whether that means a different tool or a smarter configuration.",
     icon: LinkIcon,
-    color: "bg-amber-500 dark:bg-amber-400",
   },
 ];
 
@@ -100,7 +97,7 @@ export function Services() {
               }}
               className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-8"
             >
-              <div className={`mb-5 inline-flex h-11 w-11 items-center justify-center rounded-[9px] text-white dark:text-zinc-900 ${service.color}`}>
+              <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-[9px] bg-teal-700/10 dark:bg-teal-400/10 text-teal-700 dark:text-teal-400">
                 <service.icon />
               </div>
               <h3
