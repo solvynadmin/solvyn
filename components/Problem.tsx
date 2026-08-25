@@ -1,5 +1,11 @@
-import Image from "next/image";
 import { FadeIn } from "@/components/FadeIn";
+
+const nodes = [
+  { num: "01", left: "6%", top: "8%" },
+  { num: "02", left: "40%", top: "30%" },
+  { num: "03", left: "26%", top: "60%" },
+  { num: "04", left: "62%", top: "80%" },
+];
 
 export function Problem() {
   return (
@@ -63,37 +69,35 @@ export function Problem() {
           </FadeIn>
         </div>
 
-        {/* Decorative panel — gradient glow with the brand mark */}
+        {/* Decorative panel — a workflow with a broken link in the middle */}
         <FadeIn direction="none" delay={0.1} className="hidden lg:block relative aspect-square">
-          <div aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
-            {/* Soft gradient glow */}
-            <div
-              className="absolute inset-0 rounded-full blur-3xl opacity-60 dark:opacity-40"
-              style={{
-                background:
-                  "radial-gradient(circle at 50% 50%, rgba(15,118,110,0.22), transparent 65%)",
-              }}
-            />
+          <div aria-hidden="true" className="absolute inset-0">
+            <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" fill="none">
+              {/* 01 -> 02: connected */}
+              <line x1="14" y1="16" x2="48" y2="38" stroke="currentColor" className="text-teal-600 dark:text-teal-400" strokeWidth="0.8" />
+              {/* 02 -> 03: broken, two stubs with a gap */}
+              <line x1="48" y1="38" x2="44.1" y2="46.8" stroke="currentColor" className="text-zinc-400 dark:text-zinc-500" strokeWidth="1" strokeDasharray="3 2" />
+              <line x1="34" y1="68" x2="37.9" y2="59.2" stroke="currentColor" className="text-zinc-400 dark:text-zinc-500" strokeWidth="1" strokeDasharray="3 2" />
+              <circle cx="44.1" cy="46.8" r="2" fill="none" stroke="currentColor" className="text-zinc-400 dark:text-zinc-500" strokeWidth="1" />
+              <circle cx="37.9" cy="59.2" r="2" fill="none" stroke="currentColor" className="text-zinc-400 dark:text-zinc-500" strokeWidth="1" />
+              {/* 03 -> 04: connected */}
+              <line x1="34" y1="68" x2="70" y2="88" stroke="currentColor" className="text-teal-600 dark:text-teal-400" strokeWidth="0.8" />
+            </svg>
 
-            {/* Concentric rings */}
-            <div className="absolute h-[88%] w-[88%] rounded-full border border-zinc-300/70 dark:border-zinc-600/50" />
-            <div className="absolute h-[62%] w-[62%] rounded-full border border-zinc-300/70 dark:border-zinc-600/50" />
-
-            {/* Brand mark */}
-            <Image
-              src="/solvyn-icon-light-bg.svg"
-              alt=""
-              width={140}
-              height={140}
-              className="relative opacity-30 dark:hidden"
-            />
-            <Image
-              src="/solvyn-icon-dark-bg.svg"
-              alt=""
-              width={140}
-              height={140}
-              className="relative hidden dark:block opacity-40"
-            />
+            {nodes.map(({ num, left, top }) => (
+              <div
+                key={num}
+                className="absolute flex h-[76px] w-[76px] items-center justify-center rounded-xl border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-900"
+                style={{ left, top }}
+              >
+                <span
+                  className="text-2xl font-bold text-teal-600 dark:text-teal-400 tabular-nums"
+                  style={{ fontFamily: "var(--font-space-grotesk)" }}
+                >
+                  {num}
+                </span>
+              </div>
+            ))}
           </div>
         </FadeIn>
         </div>
