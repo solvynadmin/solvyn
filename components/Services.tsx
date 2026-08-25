@@ -3,26 +3,67 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { FadeIn } from "@/components/FadeIn";
 
+function LayersIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <polygon points="12 2 22 8.5 12 15 2 8.5 12 2" />
+      <polyline points="2 15.5 12 22 22 15.5" />
+      <polyline points="2 12 12 18.5 22 12" />
+    </svg>
+  );
+}
+
+function SparkleIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+      <path d="M12 8a4 4 0 0 0 4 4 4 4 0 0 0-4 4 4 4 0 0 0-4-4 4 4 0 0 0 4-4Z" />
+    </svg>
+  );
+}
+
+function LinkIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+      <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+    </svg>
+  );
+}
+
+function CompassIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="10" />
+      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
+    </svg>
+  );
+}
+
 const services = [
   {
     title: "Website and App Development",
     description:
       "From a clean marketing site to a custom internal tool or customer-facing app, we design and build what your business needs. After launch, we maintain what we build. No hand-off to a third party once the project is done.",
+    icon: LayersIcon,
   },
   {
     title: "AI Implementation",
     description:
       "If you've got a process that runs on copy-paste, or data sitting in tools that don't talk to each other, AI can probably help. We figure out what's actually realistic for your business, build it, and connect it to the software you already use.",
+    icon: SparkleIcon,
   },
   {
     title: "Systems and Integrations",
     description:
       "We handle the tools your business runs on, from initial setup through day-to-day management. If something in your current stack isn't doing its job, we'll tell you and help find a better path, whether that means a different tool or a smarter configuration.",
+    icon: LinkIcon,
   },
   {
     title: "Strategic Consulting",
     description:
       "If you're not sure where to start, start here. We ask the right questions, map what you have, and give you a clear picture of what to build and why. No jargon, no overselling. Just an honest assessment and a realistic plan.",
+    icon: CompassIcon,
   },
 ];
 
@@ -54,6 +95,9 @@ export function Services() {
               }}
               className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-8"
             >
+              <div className="mb-5 inline-flex h-11 w-11 items-center justify-center rounded-[9px] bg-teal-700/10 dark:bg-teal-400/10 text-teal-700 dark:text-teal-400">
+                <service.icon />
+              </div>
               <h3
                 className="text-xl font-medium text-zinc-900 dark:text-zinc-50 mb-3"
                 style={{ fontFamily: "var(--font-space-grotesk)" }}
