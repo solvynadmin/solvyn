@@ -194,13 +194,13 @@ export function Contact() {
               className="text-3xl md:text-4xl font-medium text-zinc-900 dark:text-zinc-50 mb-3"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
             >
-              Let&apos;s talk about what you&apos;re building.
+              Your business, running the way you intended.
             </h2>
             <p
               className="text-lg text-zinc-500 dark:text-zinc-400 mb-10"
               style={{ fontFamily: "var(--font-inter)" }}
             >
-              Tell us where you are and what you&apos;re looking to get done. We&apos;ll
+              Tell us where you are and what&apos;s getting in the way. We&apos;ll
               follow up within one business day.
             </p>
           </FadeIn>
@@ -348,7 +348,7 @@ export function Contact() {
                 className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-1.5"
                 style={{ fontFamily: "var(--font-inter)" }}
               >
-                What are you looking to solve?{" "}
+                What&apos;s getting in the way right now?{" "}
                 <span className="text-teal-700 dark:text-teal-400" aria-hidden="true">*</span>
               </label>
               <textarea

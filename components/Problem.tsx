@@ -38,6 +38,16 @@ export function Problem() {
               involved past launch. One firm, one relationship, no hand-offs.
             </p>
           </FadeIn>
+          <FadeIn delay={0.25}>
+            <p
+              className="text-lg md:text-xl text-zinc-700 dark:text-zinc-300 leading-relaxed mt-6"
+              style={{ fontFamily: "var(--font-inter)" }}
+            >
+              The hard part is rarely fixing the problem. It&apos;s knowing which
+              problem to fix first, and whether the fix is worth what it
+              costs. That&apos;s where every engagement starts.
+            </p>
+          </FadeIn>
         </div>
       </div>
     </section>

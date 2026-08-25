@@ -31,15 +31,6 @@ function LinkIcon() {
   );
 }
 
-function CompassIcon() {
-  return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <circle cx="12" cy="12" r="10" />
-      <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-    </svg>
-  );
-}
-
 const services = [
   {
     title: "Website and App Development",
@@ -59,12 +50,6 @@ const services = [
       "We handle the tools your business runs on, from initial setup through day-to-day management. If something in your current stack isn't doing its job, we'll tell you and help find a better path, whether that means a different tool or a smarter configuration.",
     icon: LinkIcon,
   },
-  {
-    title: "Strategic Consulting",
-    description:
-      "If you're not sure where to start, start here. We ask the right questions, map what you have, and give you a clear picture of what to build and why. No jargon, no overselling. Just an honest assessment and a realistic plan.",
-    icon: CompassIcon,
-  },
 ];
 
 export function Services() {
@@ -75,13 +60,30 @@ export function Services() {
       <div className="max-w-[1200px] mx-auto px-6 md:px-8">
         <FadeIn>
           <h2
-            className="text-3xl md:text-4xl font-medium text-zinc-900 dark:text-zinc-50 mb-12"
-            style={{ fontFamily: "var(--font-space-grotesk)" }}
+            className="text-sm font-medium text-teal-700 dark:text-teal-400 uppercase tracking-wide mb-6"
+            style={{ fontFamily: "var(--font-inter)" }}
           >
-            What we do
+            How we implement
           </h2>
         </FadeIn>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <FadeIn delay={0.05}>
+          <h3
+            className="text-3xl md:text-4xl font-medium text-zinc-900 dark:text-zinc-50 mb-4"
+            style={{ fontFamily: "var(--font-space-grotesk)" }}
+          >
+            What we build
+          </h3>
+        </FadeIn>
+        <FadeIn delay={0.1}>
+          <p
+            className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed mb-12 max-w-2xl"
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            When you bring us in to implement, this is the work. Every one of
+            these starts from a recommendation we can defend.
+          </p>
+        </FadeIn>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {services.map((service, i) => (
             <motion.div
               key={service.title}

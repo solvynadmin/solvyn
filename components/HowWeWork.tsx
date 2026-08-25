@@ -3,16 +3,21 @@ import { FadeIn } from "@/components/FadeIn";
 const steps = [
   {
     num: "01",
-    heading: "Understand before proposing",
-    body: "We don't start by pitching a solution. Before any proposal, we spend time understanding how your business operates: where the friction is, what you've already tried, and what a realistic fix actually looks like. That conversation shapes the scope, the budget, and what gets cut.",
+    heading: "Diagnose before proposing",
+    body: "We don't start by pitching a solution. Before any proposal, we spend time understanding how your business operates: where the friction is, what you've already tried, and what a realistic fix actually looks like. That work produces a written recommendation, and that recommendation shapes the scope, the budget, and what gets cut.",
   },
   {
     num: "02",
+    heading: "You choose who does the work",
+    body: "The recommendation stands on its own. If you'd rather implement it internally or with someone you already trust, take it and go. We'd rather be honest about that than pad a scope to keep you here.",
+  },
+  {
+    num: "03",
     heading: "Build it under one roof",
     body: "From there, we build it. Solvyn handles the full build under one roof, from design through deployment. You're not coordinating between a designer and a separate developer and a vendor for each tool. You have one point of contact throughout.",
   },
   {
-    num: "03",
+    num: "04",
     heading: "Stay involved after launch",
     body: "After launch, we stay involved. Most technology problems surface after go-live, not before. We offer ongoing support for what we build, so when something changes or breaks, you have someone accountable. Not a helpdesk ticket with a five-day response window.",
   },
@@ -20,7 +25,7 @@ const steps = [
 
 export function HowWeWork() {
   return (
-    <section className="bg-zinc-100 dark:bg-zinc-800 py-20 md:py-28 border-y border-zinc-200 dark:border-zinc-700">
+    <section id="how-it-works" className="bg-zinc-100 dark:bg-zinc-800 py-20 md:py-28 border-y border-zinc-200 dark:border-zinc-700">
       <div className="max-w-[1200px] mx-auto px-6 md:px-8">
         <FadeIn>
           <h2
