@@ -1,5 +1,70 @@
 import { FadeIn } from "@/components/FadeIn";
 
+function ChatIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+    </svg>
+  );
+}
+
+function CalendarIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="3" y="4" width="18" height="18" rx="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  );
+}
+
+function MailIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="4" width="20" height="16" rx="2" />
+      <path d="m2 7 10 6 10-6" />
+    </svg>
+  );
+}
+
+function DocIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z" />
+      <path d="M14 2v6h6" />
+    </svg>
+  );
+}
+
+function GearIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.04 4.29l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  );
+}
+
+function ChartIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <line x1="12" y1="20" x2="12" y2="10" />
+      <line x1="18" y1="20" x2="18" y2="4" />
+      <line x1="6" y1="20" x2="6" y2="16" />
+    </svg>
+  );
+}
+
+const scatteredTools = [
+  { Icon: ChatIcon, left: "6%", top: "6%", size: 68, rotate: -8 },
+  { Icon: CalendarIcon, left: "58%", top: "2%", size: 60, rotate: 11 },
+  { Icon: MailIcon, left: "22%", top: "34%", size: 78, rotate: 5 },
+  { Icon: DocIcon, left: "64%", top: "32%", size: 64, rotate: -7 },
+  { Icon: GearIcon, left: "10%", top: "66%", size: 58, rotate: 13 },
+  { Icon: ChartIcon, left: "56%", top: "64%", size: 72, rotate: -4 },
+];
+
 export function Problem() {
   return (
     <section className="bg-zinc-100 dark:bg-zinc-800 py-20 md:py-28 border-y border-zinc-200 dark:border-zinc-700">
@@ -51,48 +116,24 @@ export function Problem() {
           </FadeIn>
         </div>
 
-        {/* Decorative panel — scattered, disconnected tools */}
+        {/* Decorative panel — a pile of mismatched, unconnected tools */}
         <FadeIn direction="none" delay={0.1} className="hidden lg:block relative aspect-square">
           <div aria-hidden="true" className="absolute inset-0">
-            {/* Dashed stubs that don't connect, plus open ends */}
-            <svg className="absolute inset-0 w-full h-full text-zinc-400/50 dark:text-zinc-600/60" viewBox="0 0 100 100" fill="none">
-              <path d="M30 26 L30 12" stroke="currentColor" strokeWidth="0.6" strokeDasharray="2 3" />
-              <path d="M62 30 L78 24" stroke="currentColor" strokeWidth="0.6" strokeDasharray="2 3" />
-              <path d="M34 62 L18 70" stroke="currentColor" strokeWidth="0.6" strokeDasharray="2 3" />
-              <path d="M70 66 L70 82" stroke="currentColor" strokeWidth="0.6" strokeDasharray="2 3" />
-            </svg>
-            <span className="absolute left-[28%] top-[10%] h-2 w-2 rounded-full border-2 border-zinc-400 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800" />
-            <span className="absolute left-[76%] top-[22%] h-2 w-2 rounded-full border-2 border-zinc-400 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800" />
-            <span className="absolute left-[16%] top-[71%] h-2 w-2 rounded-full border-2 border-zinc-400 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800" />
-            <span className="absolute left-[68%] top-[83%] h-2 w-2 rounded-full border-2 border-zinc-400 dark:border-zinc-600 bg-zinc-100 dark:bg-zinc-800" />
-
-            {/* Card: top-left */}
-            <div className="absolute left-[4%] top-[26%] w-[46%] rounded-lg border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-900 shadow-lg p-4 -rotate-6">
-              <div className="h-1.5 w-1/2 rounded-full bg-zinc-300 dark:bg-zinc-600 mb-3" />
-              <div className="space-y-2">
-                <div className="h-2 w-4/5 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-                <div className="h-2 w-3/5 rounded-full bg-zinc-200 dark:bg-zinc-700" />
+            {scatteredTools.map(({ Icon, left, top, size, rotate }, i) => (
+              <div
+                key={i}
+                className="absolute flex items-center justify-center rounded-xl border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-900 text-zinc-400 dark:text-zinc-500 shadow-lg"
+                style={{
+                  left,
+                  top,
+                  width: size,
+                  height: size,
+                  transform: `rotate(${rotate}deg)`,
+                }}
+              >
+                <Icon />
               </div>
-            </div>
-
-            {/* Card: middle-right */}
-            <div className="absolute right-[2%] top-[36%] w-[48%] rounded-lg border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-900 shadow-lg p-4 rotate-3">
-              <div className="h-1.5 w-2/5 rounded-full bg-zinc-300 dark:bg-zinc-600 mb-3" />
-              <div className="grid grid-cols-3 gap-1.5">
-                <div className="h-7 rounded-[5px] bg-zinc-200 dark:bg-zinc-700" />
-                <div className="h-7 rounded-[5px] bg-zinc-200 dark:bg-zinc-700" />
-                <div className="h-7 rounded-[5px] bg-zinc-200 dark:bg-zinc-700" />
-              </div>
-            </div>
-
-            {/* Card: bottom-left */}
-            <div className="absolute left-[12%] bottom-[6%] w-[44%] rounded-lg border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-900 shadow-lg p-4 rotate-2">
-              <div className="h-1.5 w-1/3 rounded-full bg-zinc-300 dark:bg-zinc-600 mb-3" />
-              <div className="space-y-2">
-                <div className="h-2 w-full rounded-full bg-zinc-200 dark:bg-zinc-700" />
-                <div className="h-2 w-2/3 rounded-full bg-zinc-200 dark:bg-zinc-700" />
-              </div>
-            </div>
+            ))}
           </div>
         </FadeIn>
         </div>
