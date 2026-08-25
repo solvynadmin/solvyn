@@ -44,7 +44,7 @@ export function Diagnostic() {
       <div className="max-w-[1200px] mx-auto px-6 md:px-8">
         <FadeIn>
           <h2
-            className="text-sm font-medium text-teal-700 dark:text-teal-400 uppercase tracking-wide mb-6"
+            className="text-sm font-medium text-teal-700 dark:text-teal-400 uppercase tracking-wide mb-6 text-center"
             style={{ fontFamily: "var(--font-inter)" }}
           >
             Where we start
@@ -53,7 +53,7 @@ export function Diagnostic() {
 
         <FadeIn delay={0.05}>
           <h3
-            className="text-3xl md:text-4xl font-medium text-zinc-900 dark:text-zinc-50 mb-8 max-w-3xl"
+            className="text-3xl md:text-4xl font-medium text-zinc-900 dark:text-zinc-50 mb-8 max-w-3xl mx-auto text-center"
             style={{ fontFamily: "var(--font-space-grotesk)" }}
           >
             We find the bottleneck before anyone talks about building.
@@ -61,7 +61,7 @@ export function Diagnostic() {
         </FadeIn>
 
         <FadeIn delay={0.1}>
-          <div className="max-w-3xl space-y-6 mb-14">
+          <div className="max-w-3xl mx-auto text-center space-y-6 mb-14">
             <p
               className="text-lg text-zinc-600 dark:text-zinc-400 leading-relaxed"
               style={{ fontFamily: "var(--font-inter)" }}
@@ -84,7 +84,7 @@ export function Diagnostic() {
         </FadeIn>
 
         <FadeIn delay={0.15}>
-          <div className="border border-zinc-200 dark:border-zinc-700 rounded-lg p-8 mb-16 max-w-3xl">
+          <div className="border border-zinc-200 dark:border-zinc-700 rounded-lg p-8 mb-16 max-w-3xl mx-auto">
             <h4
               className="text-xl font-medium text-zinc-900 dark:text-zinc-50 mb-5"
               style={{ fontFamily: "var(--font-space-grotesk)" }}
