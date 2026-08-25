@@ -3,6 +3,51 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { FadeIn } from "@/components/FadeIn";
 
+function BoxIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
+      <path d="m3.3 7 8.7 5 8.7-5M12 22V12" />
+    </svg>
+  );
+}
+
+function RefreshIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M21 12a9 9 0 0 1-15.3 6.4M3 12a9 9 0 0 1 15.3-6.4" />
+      <path d="M21 3v6h-6M3 21v-6h6" />
+    </svg>
+  );
+}
+
+function WrenchIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18v3h3l6.3-6.3a4 4 0 0 0 5.4-5.4l-2.8 2.8-2-2Z" />
+    </svg>
+  );
+}
+
+function FlagIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1Z" />
+      <line x1="4" y1="22" x2="4" y2="3" />
+    </svg>
+  );
+}
+
+function UsersIcon() {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  );
+}
+
 const takeaways = [
   "A clear map of how work moves through your business today",
   "The bottlenecks ranked by what they're costing you",
@@ -14,14 +59,20 @@ const answerTypes = [
   {
     title: "Something that already exists",
     body: "Often the fix is software that's already on the market, or a tool you're already paying for and using at a fraction of what it does. We'll tell you when that's the case, even though there's nothing in it for us.",
+    icon: BoxIcon,
+    color: "bg-sky-500 dark:bg-sky-400",
   },
   {
     title: "An automation",
     body: "Connecting the systems you already have so work moves between them on its own, instead of someone rekeying the same information into a second screen.",
+    icon: RefreshIcon,
+    color: "bg-violet-500 dark:bg-violet-400",
   },
   {
     title: "A custom build",
     body: "When nothing off the shelf fits how you actually operate, we scope and build it. This is the last option we reach for, not the first.",
+    icon: WrenchIcon,
+    color: "bg-amber-500 dark:bg-amber-400",
   },
 ];
 
@@ -29,10 +80,14 @@ const paths = [
   {
     title: "Take it and run",
     body: "You keep the full recommendation, including tool names, configuration notes, and the reasoning behind each call. Hand it to your own team or a developer you already work with. No obligation to come back to us.",
+    icon: FlagIcon,
+    color: "bg-indigo-500 dark:bg-indigo-400",
   },
   {
     title: "Have us implement it",
     body: "We build what we recommended and stay involved after it's live. One firm from the first conversation through ongoing support, with nobody to hand you off to.",
+    icon: UsersIcon,
+    color: "bg-teal-600 dark:bg-teal-400",
   },
 ];
 
@@ -132,6 +187,9 @@ export function Diagnostic() {
               }}
               className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-8"
             >
+              <div className={`mb-5 inline-flex h-11 w-11 items-center justify-center rounded-[9px] text-white dark:text-zinc-900 ${item.color}`}>
+                <item.icon />
+              </div>
               <h5
                 className="text-xl font-medium text-zinc-900 dark:text-zinc-50 mb-3"
                 style={{ fontFamily: "var(--font-space-grotesk)" }}
@@ -180,6 +238,9 @@ export function Diagnostic() {
               }}
               className="bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-lg p-8"
             >
+              <div className={`mb-5 inline-flex h-11 w-11 items-center justify-center rounded-[9px] text-white dark:text-zinc-900 ${item.color}`}>
+                <item.icon />
+              </div>
               <h5
                 className="text-xl font-medium text-zinc-900 dark:text-zinc-50 mb-3"
                 style={{ fontFamily: "var(--font-space-grotesk)" }}

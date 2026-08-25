@@ -57,12 +57,12 @@ function ChartIcon() {
 }
 
 const scatteredTools = [
-  { Icon: ChatIcon, left: "6%", top: "6%", size: 68, rotate: -8 },
-  { Icon: CalendarIcon, left: "58%", top: "2%", size: 60, rotate: 11 },
-  { Icon: MailIcon, left: "22%", top: "34%", size: 78, rotate: 5 },
-  { Icon: DocIcon, left: "64%", top: "32%", size: 64, rotate: -7 },
-  { Icon: GearIcon, left: "10%", top: "66%", size: 58, rotate: 13 },
-  { Icon: ChartIcon, left: "56%", top: "64%", size: 72, rotate: -4 },
+  { Icon: ChatIcon, left: "6%", top: "6%", size: 68, rotate: -8, color: "bg-sky-500 dark:bg-sky-400" },
+  { Icon: CalendarIcon, left: "58%", top: "2%", size: 60, rotate: 11, color: "bg-amber-500 dark:bg-amber-400" },
+  { Icon: MailIcon, left: "22%", top: "34%", size: 78, rotate: 5, color: "bg-rose-500 dark:bg-rose-400" },
+  { Icon: DocIcon, left: "64%", top: "32%", size: 64, rotate: -7, color: "bg-violet-500 dark:bg-violet-400" },
+  { Icon: GearIcon, left: "10%", top: "66%", size: 58, rotate: 13, color: "bg-emerald-500 dark:bg-emerald-400" },
+  { Icon: ChartIcon, left: "56%", top: "64%", size: 72, rotate: -4, color: "bg-teal-600 dark:bg-teal-400" },
 ];
 
 export function Problem() {
@@ -119,10 +119,10 @@ export function Problem() {
         {/* Decorative panel — a pile of mismatched, unconnected tools */}
         <FadeIn direction="none" delay={0.1} className="hidden lg:block relative aspect-square">
           <div aria-hidden="true" className="absolute inset-0">
-            {scatteredTools.map(({ Icon, left, top, size, rotate }, i) => (
+            {scatteredTools.map(({ Icon, left, top, size, rotate, color }, i) => (
               <div
                 key={i}
-                className="absolute flex items-center justify-center rounded-xl border border-zinc-300 dark:border-zinc-600 bg-zinc-50 dark:bg-zinc-900 text-zinc-400 dark:text-zinc-500 shadow-lg"
+                className={`absolute flex items-center justify-center rounded-xl text-white dark:text-zinc-900 shadow-lg ${color}`}
                 style={{
                   left,
                   top,
