@@ -62,7 +62,7 @@ export function Nav() {
           : "bg-transparent border-transparent"
       }`}
     >
-      <div className="max-w-[1200px] mx-auto px-6 md:px-8 h-16 flex items-center justify-between">
+      <div className="w-full px-6 sm:px-8 lg:px-12 xl:px-16 h-16 flex items-center justify-between">
         <a href="/" aria-label="Solvyn home">
           <Image
             src="/solvyn-wordmark-light-bg.svg"
