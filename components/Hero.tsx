@@ -48,7 +48,7 @@ export function Hero() {
             className="text-5xl md:text-[62px] font-bold text-zinc-900 dark:text-zinc-50 leading-[1.1] tracking-tight mb-6"
             style={{ fontFamily: "var(--font-space-grotesk)" }}
           >
-            Your business, running the way you intended.
+            Know what&apos;s actually slowing your business down.
           </motion.h1>
 
           <motion.p
@@ -58,10 +58,12 @@ export function Hero() {
             className="text-lg md:text-xl text-zinc-500 dark:text-zinc-400 leading-relaxed mb-10 max-w-2xl"
             style={{ fontFamily: "var(--font-inter)" }}
           >
-            Most small business owners are managing their technology instead of
-            using it. Solvyn takes you from scope to deployment and stays
-            involved after launch, so you&apos;re not stuck stitching together tools
-            that don&apos;t talk to each other.
+            Most owners can feel where the friction is without knowing what
+            causes it. Solvyn finds the bottleneck, tells you specifically
+            what solves it, and builds it if you want us to. Sometimes the
+            answer is software you already pay for and aren&apos;t using properly.
+            Other times it takes an automation, or something built from
+            scratch.
           </motion.p>
 
           <motion.div
@@ -75,14 +77,14 @@ export function Hero() {
               className="inline-block px-6 py-3 rounded-[7px] bg-teal-700 dark:bg-teal-400 text-white dark:text-zinc-900 font-medium text-base hover:bg-teal-800 dark:hover:bg-teal-300 transition-colors"
               style={{ fontFamily: "var(--font-inter)" }}
             >
-              Let&apos;s talk
+              Start with a diagnostic
             </a>
             <a
-              href="#services"
+              href="#how-it-works"
               className="text-sm font-medium text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
               style={{ fontFamily: "var(--font-inter)" }}
             >
-              See what we do <span aria-hidden="true">→</span>
+              See how it works <span aria-hidden="true">→</span>
             </a>
           </motion.div>
 
@@ -93,12 +95,7 @@ export function Hero() {
             className="mt-6 flex items-center gap-2 text-sm text-zinc-600 dark:text-zinc-400 font-medium"
             style={{ fontFamily: "var(--font-inter)" }}
           >
-            <span className="inline-block w-4 h-4 rounded-full bg-teal-700 dark:bg-teal-400 flex-shrink-0 flex items-center justify-center" aria-hidden="true">
-              <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
-                <path d="M1 3.5L3.5 6L8 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </span>
-            Free initial consultation — no commitment required.
+            Free initial conversation. No commitment required.
           </motion.p>
         </div>
 

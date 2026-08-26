@@ -8,7 +8,12 @@ const faqs = [
   {
     question: "What does Solvyn do?",
     answer:
-      "Solvyn is a technology and AI consulting firm for small and medium businesses. We scope, build, and implement solutions ourselves: websites, apps, AI tools, workflow automation, and system integrations. The difference is that you work with one firm from start to finish rather than managing a chain of vendors who each own one piece of the picture.",
+      "We find what's slowing your business down and tell you what fixes it. That recommendation might point to a tool that already exists, an automation between systems you already run, or something we build for you. If you want us to implement it, we do that too, and we support it afterward. If you'd rather take the plan elsewhere, it's yours.",
+  },
+  {
+    question: "What is an Operations Diagnostic?",
+    answer:
+      "A short, fixed-fee engagement where we learn how your business runs, find where the time and money are going, and hand you a written recommendation for each bottleneck we find. It includes what to fix, what to fix it with, and a realistic estimate of the effort involved.",
   },
   {
     question: "Who do you work with?",
@@ -18,7 +23,17 @@ const faqs = [
   {
     question: "How is this different from hiring an agency or a freelancer?",
     answer:
-      "A typical agency scopes your project, then hands off design to one person, development to another, and calls it done when the deliverable ships. A freelancer often covers one discipline well but refers out anything outside it. Solvyn handles the full picture, from understanding what you actually need through building it to making sure it works in your business after the fact. No handoffs, no gaps between vendors, one person who stays accountable throughout.",
+      "A typical agency scopes your project, then hands off design to one person, development to another, and calls it done when the deliverable ships. A freelancer often covers one discipline well but refers out anything outside it. Solvyn handles the full picture, from understanding what you actually need through building it to making sure it works in your business after the fact. No handoffs, no gaps between vendors, one person who stays accountable throughout. An agency sells you the thing it builds. We start by figuring out whether you need something built at all, and we'll say so when you don't.",
+  },
+  {
+    question: "Do I have to hire you to implement what you recommend?",
+    answer:
+      "No. The recommendation is yours to keep and act on however you want, including with your own team or another developer. Plenty of clients do exactly that.",
+  },
+  {
+    question: "What if the answer is a tool I could have bought myself?",
+    answer:
+      "Then that's what we'll tell you, and we'll tell you how to configure it. We'd rather be the firm you call next time than the one that sold you a custom build you didn't need.",
   },
   {
     question: "What does working with Solvyn look like from the start?",

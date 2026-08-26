@@ -50,7 +50,9 @@ export function Nav() {
     setTheme(resolvedTheme === "dark" ? "light" : "dark");
   }
 
+  const diagnosticHref = pathname === "/" ? "#diagnostic" : "/#diagnostic";
   const servicesHref = pathname === "/" ? "#services" : "/#services";
+  const howItWorksHref = pathname === "/" ? "#how-it-works" : "/#how-it-works";
   const faqHref = pathname === "/" ? "#faq" : "/#faq";
   const contactHref = pathname === "/" ? "#contact" : "/contact";
 
@@ -84,16 +86,11 @@ export function Nav() {
 
         <div className="flex items-center gap-3">
           <a
-            href="/about"
-            aria-current={pathname === "/about" ? "page" : undefined}
-            className={`hidden sm:block px-3 py-2 text-sm transition-colors ${
-              pathname === "/about"
-                ? "text-zinc-900 dark:text-zinc-50 font-medium"
-                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50"
-            }`}
+            href={diagnosticHref}
+            className="hidden sm:block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
             style={{ fontFamily: "var(--font-inter)" }}
           >
-            About
+            Diagnostic
           </a>
           <a
             href={servicesHref}
@@ -101,6 +98,13 @@ export function Nav() {
             style={{ fontFamily: "var(--font-inter)" }}
           >
             Services
+          </a>
+          <a
+            href={howItWorksHref}
+            className="hidden sm:block px-3 py-2 text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 transition-colors"
+            style={{ fontFamily: "var(--font-inter)" }}
+          >
+            How it works
           </a>
           <a
             href={faqHref}
@@ -154,16 +158,11 @@ export function Nav() {
       {menuOpen && (
         <div className="sm:hidden border-t border-zinc-200 dark:border-zinc-800 px-6 py-4 space-y-1" style={{ fontFamily: "var(--font-inter)" }}>
           <a
-            href="/about"
-            aria-current={pathname === "/about" ? "page" : undefined}
+            href={diagnosticHref}
             onClick={() => setMenuOpen(false)}
-            className={`block px-3 py-2.5 rounded-[7px] text-sm transition-colors ${
-              pathname === "/about"
-                ? "text-zinc-900 dark:text-zinc-50 font-medium bg-zinc-100 dark:bg-zinc-800"
-                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800"
-            }`}
+            className="block px-3 py-2.5 rounded-[7px] text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
           >
-            About
+            Diagnostic
           </a>
           <a
             href={servicesHref}
@@ -171,6 +170,13 @@ export function Nav() {
             className="block px-3 py-2.5 rounded-[7px] text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
           >
             Services
+          </a>
+          <a
+            href={howItWorksHref}
+            onClick={() => setMenuOpen(false)}
+            className="block px-3 py-2.5 rounded-[7px] text-sm text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-50 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
+          >
+            How it works
           </a>
           <a
             href={faqHref}

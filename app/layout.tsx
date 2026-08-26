@@ -18,9 +18,9 @@ const inter = Inter({
 });
 
 const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.solvynconsulting.com";
-const DEFAULT_TITLE = "Solvyn: Technology and AI Consulting for Small Businesses";
+const DEFAULT_TITLE = "Solvyn: Find What's Slowing Your Business Down";
 const DEFAULT_DESCRIPTION =
-  "Technology and AI consulting for small and medium businesses. Custom software, AI tools, and integrations. Based in Arizona, serving clients nationwide.";
+  "We diagnose the bottleneck costing your business time and money, then tell you exactly what fixes it. Sometimes that's a tool you already have. Sometimes it's an automation or a custom build. Based in Arizona, serving clients nationwide.";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
