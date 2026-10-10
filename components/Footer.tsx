@@ -45,7 +45,7 @@ export function Footer() {
         </nav>
 
         {/* Legal + social */}
-        <div className="flex items-center gap-5">
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
           <p className="text-sm text-zinc-400 dark:text-zinc-600">
             &copy; <CurrentYear /> Solvyn LLC
           </p>
